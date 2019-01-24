@@ -5,16 +5,14 @@ public class Theater {
 	private String theaterId;
 	private String name;
 	private String address;
-	private String zipcode;
-	private int latitude;
-	private int longitude;
+	private double latitude;
+	private double longitude;
 	
-	public Theater(String theaterId, String name, String address, String zipcode, int latitude, int longitude) {
+	public Theater(String theaterId, String name, String address, double latitude, double longitude) {
 		super();
 		this.theaterId = theaterId;
 		this.name = name;
 		this.address = address;
-		this.zipcode = zipcode;
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
@@ -43,15 +41,7 @@ public class Theater {
 		this.address = address;
 	}
 
-	public String getZipcode() {
-		return zipcode;
-	}
-
-	public void setZipcode(String zipcode) {
-		this.zipcode = zipcode;
-	}
-
-	public int getLatitude() {
+	public double getLatitude() {
 		return latitude;
 	}
 
@@ -59,7 +49,7 @@ public class Theater {
 		this.latitude = latitude;
 	}
 
-	public int getLongitude() {
+	public double getLongitude() {
 		return longitude;
 	}
 
