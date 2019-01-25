@@ -55,6 +55,36 @@ public class TheaterQuery {
 		}
 		
 	}
+	
+	public static Theater queryTheater(String place_id) {
+		
+		try {
+			conn = DriverManager.getConnection(CONNECTION_STRING);
+			statement = conn.createStatement();
+			
+			StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_THEATERS);
+			query.append(" WHERE " + COLLUMN_THEATERID + " IS " + "'" + place_id + "'");
+			
+			ResultSet result = statement.executeQuery(query.toString());
+			
+			Theater theater = null;
+			
+			while (result.next()) {
+				theater = new Theater(result.getString("theaterId"), 
+						result.getString("name"),
+						result.getString("address"), 
+						result.getDouble("latitude"), 
+						result.getDouble("longitude"));
+			}
+			
+			return theater;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
 
 	public static Map<String, Theater> queryAllTheaters() {
 		Map<String, Theater> theaterQuery = new HashMap<String, Theater>();
@@ -81,6 +111,15 @@ public class TheaterQuery {
 	private static boolean isTheaterPresent(String name, String address) {
 		
 		if(queryTheater(name, address) != null) {
+			return true;
+		}
+		return false;
+		
+	}
+	
+	private static boolean isTheaterPresent(String place_id) {
+		
+		if(queryTheater(place_id) != null) {
 			return true;
 		}
 		return false;
