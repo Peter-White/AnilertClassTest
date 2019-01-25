@@ -16,6 +16,10 @@ public class Theater {
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
+	
+	public Theater() {
+		
+	}
 
 	public String getTheaterId() {
 		return theaterId;
@@ -45,7 +49,7 @@ public class Theater {
 		return latitude;
 	}
 
-	public void setLatitude(int latitude) {
+	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
 
@@ -53,7 +57,7 @@ public class Theater {
 		return longitude;
 	}
 
-	public void setLongitude(int longitude) {
+	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
 	

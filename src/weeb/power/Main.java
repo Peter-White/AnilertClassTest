@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import weeb.DBQuery.TheaterQuery;
 import weeb.JSONQuery.MovieJSONQuery;
+import weeb.JSONQuery.TheaterJSONQuery;
 import weeb.data.Movie;
 import weeb.data.Showtime;
 import weeb.data.Theater;
@@ -22,7 +23,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		theatersINDB.forEach((key, value) -> System.out.println(key + ": " + value));
+		System.out.println(new TheaterJSONQuery().createTheaterFromJSON("ChIJ_c6Cq39w44kRJ7bHB5iJbCE").getName());
 		
 //		Map<String, Movie> moviesInDB = new HashMap<String, Movie>();
 ////		Map<Integer, Character> moviesFromJSON = new HashMap<Integer, Character>();
