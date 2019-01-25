@@ -12,7 +12,6 @@ import weeb.data.Theater;
 
 public class TheaterQuery {
 	
-	public static Map<String, Theater> theaterQuery = new HashMap<String, Theater>();
 	private static final String DB_NAME = "Anilert.db";
 	private static final String CONNECTION_STRING = "jdbc:sqlite:/home/leafcoder/SQL/" + DB_NAME;
 	
@@ -57,8 +56,8 @@ public class TheaterQuery {
 		
 	}
 
-	public static Map<String, Theater> queryAllTheaters(String url) {
-		theaterQuery = new HashMap<String, Theater>();
+	public static Map<String, Theater> queryAllTheaters() {
+		Map<String, Theater> theaterQuery = new HashMap<String, Theater>();
 		try {
 			conn = DriverManager.getConnection(CONNECTION_STRING);
 			statement = conn.createStatement();
@@ -79,7 +78,43 @@ public class TheaterQuery {
 		}
 	}
 	
-	private static boolean isTheaterPresent(String url, String name) {
+	private static boolean isTheaterPresent(String name, String address) {
+		
+		if(queryTheater(name, address) != null) {
+			return true;
+		}
 		return false;
+		
+	}
+	
+	public static boolean addTheater(Map<String, Theater> theatersINDB, Theater theater) {
+		try {
+			
+			conn = DriverManager.getConnection(CONNECTION_STRING);
+			statement = conn.createStatement();
+			
+			StringBuilder addStatement = new StringBuilder("INSERT INTO " + TABLE_THEATERS + "(");
+			addStatement.append(COLLUMN_THEATERID + ",");
+			addStatement.append(COLLUMN_NAME + ",");
+			addStatement.append(COLLUMN_ADDRESS + ",");
+			addStatement.append(COLLUMN_LATITUDE + ",");
+			addStatement.append(COLLUMN_LONGITUDE + ") ");
+			addStatement.append("VALUES (");
+			addStatement.append("'" + theater.getTheaterId() + "'" + ",");
+			addStatement.append("'" + theater.getName() + "'" + ",");
+			addStatement.append("'" + theater.getAddress() + "'" + ",");
+			addStatement.append("'" + theater.getLatitude() + "'" + ",");
+			addStatement.append("'" + theater.getLongitude() + "'" + ")");
+			
+			statement.execute(addStatement.toString());
+			
+			theatersINDB.put(theater.getName(), theater);
+			
+			return true;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

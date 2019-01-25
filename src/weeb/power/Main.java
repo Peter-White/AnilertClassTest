@@ -18,10 +18,11 @@ import weeb.data.Theater;
 
 public class Main {
 	
+	public static Map<String, Theater> theatersINDB = TheaterQuery.queryAllTheaters();
+	
 	public static void main(String[] args) {
-
-		Theater theater = TheaterQuery.queryTheater("ShowPlace ICON Theatres", "60 Seaport Blvd #315, Boston, MA 02210, USA");
-		System.out.println(theater.getName());
+		
+		theatersINDB.forEach((key, value) -> System.out.println(key + ": " + value));
 		
 //		Map<String, Movie> moviesInDB = new HashMap<String, Movie>();
 ////		Map<Integer, Character> moviesFromJSON = new HashMap<Integer, Character>();

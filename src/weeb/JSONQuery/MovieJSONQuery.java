@@ -24,7 +24,7 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 		movieQuery = new HashMap<String, JSONObject>();
 	}
 	
-	public JSONArray queryMovieTheaterJSON(Double lat, Double lng, int radius) throws IOException, JSONException {
+	public JSONArray queryMovieJSON(Double lat, Double lng, int radius) throws IOException, JSONException {
 		urlPath = new StringBuilder();
 		urlPath.append(graceNoteURLStart);
 		urlPath.append(numDays);
