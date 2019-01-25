@@ -23,13 +23,11 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		List<String> ids = new TheaterJSONQuery().queryTheaterIds("ShowPlace ICON Theatres", 42.3381437, -71.0475773, 20);
+		Map<String, JSONObject> userResults = new TheaterJSONQuery().userLocationSearchResults("New York");
 		
-		if(!ids.isEmpty()) {
-			for (String id : ids) {
-				System.out.println(id);
-			}
-		}
+		userResults.forEach((key, value) -> System.out.println(key + ": " + value));
+		
+//		List<String> ids = new TheaterJSONQuery().queryTheaterIds("ShowPlace ICON Theatres", 42.3381437, -71.0475773, 20);
 		
 //		Map<String, Movie> moviesInDB = new HashMap<String, Movie>();
 ////		Map<Integer, Character> moviesFromJSON = new HashMap<Integer, Character>();

@@ -2,6 +2,7 @@ package weeb.JSONQuery;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -87,4 +88,34 @@ public class TheaterJSONQuery {
 		return theaterIds;
 	}
 	
+	public Map<String, JSONObject> userLocationSearchResults(String address) {
+		
+		Map<String, JSONObject> results = new HashMap<String, JSONObject>();
+		String addressConverted = address.replaceAll(" ", "%20");
+		
+		StringBuilder url = new StringBuilder(googlePlacesSearch);
+		url.append(addressConverted);
+		url.append("&inputtype=textquery");
+		url.append("&fields=place_id,photos,formatted_address,name,rating,opening_hours,geometry");
+		url.append("&key=");
+		url.append(APIKeys.getGooglePlacesAPIKey());
+		
+		try {
+			JSONArray candidates = new JSONObjectReader().readJsonObjectFromUrl(url.toString()).getJSONArray("candidates");
+			
+			for (int i = 0; i < candidates.length(); i++) {
+				JSONObject candidate = candidates.getJSONObject(i);
+				results.put(candidate.getString("formatted_address"), candidate);
+			}
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return results;
+	}
 }
