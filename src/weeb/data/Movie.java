@@ -6,7 +6,6 @@ public class Movie {
 
 	private int movieId;
 	private String title;
-	private String released;
 	private String description;
 	private int runtime;
 	private int ratingID;
@@ -14,12 +13,11 @@ public class Movie {
 	
 	private HashMap<Integer, Showtime> showtimes;
 	
-	public Movie(int movieId, String title, String released, String description, int runtime, int ratingID,
+	public Movie(int movieId, String title, String description, int runtime, int ratingID,
 			String officialLink) {
 		super();
 		this.movieId = movieId;
 		this.title = title;
-		this.released = released;
 		this.description = description;
 		this.runtime = runtime;
 		this.ratingID = ratingID;
@@ -41,14 +39,6 @@ public class Movie {
 
 	public void setTitle(String title) {
 		this.title = title;
-	}
-
-	public String getReleased() {
-		return released;
-	}
-
-	public void setReleased(String released) {
-		this.released = released;
 	}
 
 	public String getDescription() {
