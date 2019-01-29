@@ -28,29 +28,36 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-//		Map<String, JSONObject> userResults = new TheaterJSONQuery().userLocationSearchResults("332 k st boston");
-//		
-//		userResults.forEach((key, value) -> System.out.println(key + ": " + value));
-//		
-//		int radius = 20;
-//		
-//		Map<String, JSONObject> animes = new MovieJSONQuery().queryAnimeJSON(42.3381437, -71.0475773, 20);
-//		
-//		List<String> ids = new TheaterJSONQuery().queryTheaterIds("ShowPlace ICON Theatres", 42.3381437, -71.0475773, 20);
+		Map<String, JSONObject> userResults = new TheaterJSONQuery().userLocationSearchResults("Boston");
+		
+		userResults.forEach((key, value) -> System.out.println(key + ": " + value));
+		
+		JSONObject userLocation = userResults.get("Boston, MA, USA");
 		
 		try {
-			Map<String, JSONObject> animes = new MovieJSONQuery().queryAnimeJSON(42.3381437, -71.0475773, 20);
 			
-			
-			
-			animes.forEach((key, value) -> {
-					System.out.println(key);
-					System.out.println(value);
-				});
-		} catch (IOException | JSONException e) {
+			System.out.println(userLocation.getJSONObject("geometry").getJSONObject("location"));
+//			double userLatitude = userLocation.getJSONObject("geometry").getJSONObject("viewport").getJSONObject("location").getDouble("lat");
+//			double userLongitude = userLocation.getJSONObject("geometry").getJSONObject("viewport").getJSONObject("location").getDouble("lng");
+//			
+//			System.out.println(userLatitude + "," + userLongitude);
+		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		int userChosenRadius = 20;
+		
+		
+//		try {
+//			Map<String, JSONObject> animes = new MovieJSONQuery().queryAnimeJSON(42.3381437, -71.0475773, 20);
+//		} catch (IOException | JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+//		List<String> ids = new TheaterJSONQuery().queryTheaterIds("ShowPlace ICON Theatres", 42.3381437, -71.0475773, 20);
+		
 	}
 
 }
