@@ -1,5 +1,6 @@
 package weeb.power;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,6 +9,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import weeb.DBQuery.MovieQuery;
@@ -27,11 +30,27 @@ public class Main {
 		
 //		Map<String, JSONObject> userResults = new TheaterJSONQuery().userLocationSearchResults("332 k st boston");
 //		
-//		
 //		userResults.forEach((key, value) -> System.out.println(key + ": " + value));
+//		
+//		int radius = 20;
+//		
+//		Map<String, JSONObject> animes = new MovieJSONQuery().queryAnimeJSON(42.3381437, -71.0475773, 20);
 //		
 //		List<String> ids = new TheaterJSONQuery().queryTheaterIds("ShowPlace ICON Theatres", 42.3381437, -71.0475773, 20);
 		
+		try {
+			Map<String, JSONObject> animes = new MovieJSONQuery().queryAnimeJSON(42.3381437, -71.0475773, 20);
+			
+			
+			
+			animes.forEach((key, value) -> {
+					System.out.println(key);
+					System.out.println(value);
+				});
+		} catch (IOException | JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
