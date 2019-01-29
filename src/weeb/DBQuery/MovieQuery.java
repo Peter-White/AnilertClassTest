@@ -54,4 +54,37 @@ public class MovieQuery {
 		
 		return movieQuery;
 	}
+	
+	public static Movie queryMovie(int movieId) {
+		
+		try {
+			conn = DriverManager.getConnection(CONNECTION_STRING);
+			statement = conn.createStatement();
+			
+			StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_MOVIES);
+			query.append(" WHERE " + COLLUMN_MOVIEID + " IS " + "'" + movieId + "'");
+			
+			ResultSet result = statement.executeQuery(query.toString());
+			
+			Movie movie = null;
+			
+			while (result.next()) {
+
+				movie = new Movie(result.getInt(COLLUMN_MOVIEID), 
+						result.getString(COLLUMN_TITLE), 
+						result.getString(COLLUMN_DESCRIPTION), 
+						result.getInt(COLLUMN_RUNTIME), 
+						result.getInt(COLLUMN_RATINGID), 
+						result.getString(COLLUMN_OFFICIALSITE));
+			}
+			
+			return movie;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+	
 }
