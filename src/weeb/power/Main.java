@@ -32,8 +32,6 @@ public class Main {
 //		
 //		List<String> ids = new TheaterJSONQuery().queryTheaterIds("ShowPlace ICON Theatres", 42.3381437, -71.0475773, 20);
 		
-		
-		
 	}
 
 }
