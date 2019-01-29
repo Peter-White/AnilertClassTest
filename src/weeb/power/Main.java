@@ -35,28 +35,21 @@ public class Main {
 		JSONObject userLocation = userResults.get("Boston, MA, USA");
 		
 		try {
+
+			double userLatitude = userLocation.getJSONObject("geometry").getJSONObject("location").getDouble("lat");
+			double userLongitude = userLocation.getJSONObject("geometry").getJSONObject("location").getDouble("lng");
 			
-			System.out.println(userLocation.getJSONObject("geometry").getJSONObject("location"));
-//			double userLatitude = userLocation.getJSONObject("geometry").getJSONObject("viewport").getJSONObject("location").getDouble("lat");
-//			double userLongitude = userLocation.getJSONObject("geometry").getJSONObject("viewport").getJSONObject("location").getDouble("lng");
-//			
-//			System.out.println(userLatitude + "," + userLongitude);
-		} catch (JSONException e) {
+			int userChosenRadius = 20;
+			
+			Map<String, JSONObject> animes = new MovieJSONQuery().queryAnimeJSON(userLatitude, userLongitude, userChosenRadius);
+			animes.forEach((key, value) -> {
+				System.out.println(key);
+				System.out.println(value);
+			});
+		} catch (JSONException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		int userChosenRadius = 20;
-		
-		
-//		try {
-//			Map<String, JSONObject> animes = new MovieJSONQuery().queryAnimeJSON(42.3381437, -71.0475773, 20);
-//		} catch (IOException | JSONException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-//		List<String> ids = new TheaterJSONQuery().queryTheaterIds("ShowPlace ICON Theatres", 42.3381437, -71.0475773, 20);
 		
 	}
 
