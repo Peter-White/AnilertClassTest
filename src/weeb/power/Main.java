@@ -47,12 +47,15 @@ public class Main {
 			moviesINDB.forEach((key, value) -> System.out.println(key));
 			
 			Map<String, JSONObject> animes = new MovieJSONQuery().queryAnimeJSON(userLatitude, userLongitude, userChosenRadius);
-			animes.forEach((key, value) -> MovieQuery.addMovieToDb(value));
+			animes.forEach((key, value) -> {
+				Movie movie = MovieQuery.addMovieToDb(value);
+				System.out.println(movie.getTitle());
+			});
 		} catch (JSONException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+	
 	}
 
 }
