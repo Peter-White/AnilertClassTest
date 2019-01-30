@@ -42,7 +42,32 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 		int count = 0;
 		while (count < movies.length()) {
 			JSONObject currentMovie = (JSONObject) movies.get(count);
-			if(isAnime(currentMovie)) {
+			if(isAnime(currentMovie) && !animeQuery.containsKey(currentMovie.getString("title"))) {
+				animeQuery.put(currentMovie.getString("title"), currentMovie);
+			}
+			count++;
+		}
+		
+		return animeQuery;
+	}
+	
+	public Map<String, JSONObject> querySingleTheaterAnime(Double lat, Double lng) throws IOException, JSONException {
+		urlPath = new StringBuilder();
+		urlPath.append(graceNoteURLStart);
+		urlPath.append(numDays);
+		urlPath.append("&lat=" + lat);
+		urlPath.append("&lng=" + lng);
+		urlPath.append("&radius=0.005");
+		urlPath.append("&units=km");
+		urlPath.append("&api_key=");
+		urlPath.append(APIKeys.getGracenoteAPIKey());
+		
+		JSONArray movies = readJsonArrayFromUrl(urlPath.toString());
+		
+		int count = 0;
+		while (count < movies.length()) {
+			JSONObject currentMovie = (JSONObject) movies.get(count);
+			if(isAnime(currentMovie) && !animeQuery.containsKey(currentMovie.getString("title"))) {
 				animeQuery.put(currentMovie.getString("title"), currentMovie);
 			}
 			count++;

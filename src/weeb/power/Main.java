@@ -41,11 +41,10 @@ public class Main {
 			
 			int userChosenRadius = 20;
 			
+			moviesINDB.forEach((key, value) -> System.out.println(key));
+			
 			Map<String, JSONObject> animes = new MovieJSONQuery().queryAnimeJSON(userLatitude, userLongitude, userChosenRadius);
-			animes.forEach((key, value) -> {
-				System.out.println(key);
-				System.out.println(value);
-			});
+			animes.forEach((key, value) -> MovieQuery.addMovieToDb(value));
 		} catch (JSONException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

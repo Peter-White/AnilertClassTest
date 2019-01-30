@@ -8,19 +8,19 @@ public class Movie {
 	private String title;
 	private String description;
 	private int runtime;
-	private int ratingID;
+	private String rating;
 	private String officialLink;
 	
 	private HashMap<Integer, Showtime> showtimes;
 	
-	public Movie(int movieId, String title, String description, int runtime, int ratingID,
+	public Movie(int movieId, String title, String description, int runtime, String rating,
 			String officialLink) {
 		super();
 		this.movieId = movieId;
 		this.title = title;
 		this.description = description;
 		this.runtime = runtime;
-		this.ratingID = ratingID;
+		this.rating = rating;
 		this.officialLink = officialLink;
 		showtimes = new HashMap<>();
 	}
@@ -57,12 +57,12 @@ public class Movie {
 		this.runtime = runtime;
 	}
 
-	public int getRatingID() {
-		return ratingID;
+	public String getRatingID() {
+		return rating;
 	}
 
-	public void setRatingID(int ratingID) {
-		this.ratingID = ratingID;
+	public void setRatingID(String rating) {
+		this.rating = rating;
 	}
 
 	public String getOfficialLink() {
