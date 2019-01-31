@@ -27,6 +27,8 @@ public class TheaterQuery {
 	
 	public static Theater queryTheater(String name, String address) {
 		
+		Theater theater = null;
+		
 		try {
 			conn = DriverManager.getConnection(CONNECTION_STRING);
 			statement = conn.createStatement();
@@ -37,8 +39,6 @@ public class TheaterQuery {
 			
 			ResultSet result = statement.executeQuery(query.toString());
 			
-			Theater theater = null;
-			
 			while (result.next()) {
 				theater = new Theater(result.getString("theaterId"), 
 						result.getString("name"),
@@ -47,16 +47,17 @@ public class TheaterQuery {
 						result.getDouble("longitude"));
 			}
 			
-			return theater;
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}
 		
+		return theater;
 	}
 	
 	public static Theater queryTheater(String place_id) {
+		
+		Theater theater = null;
 		
 		try {
 			conn = DriverManager.getConnection(CONNECTION_STRING);
@@ -67,7 +68,35 @@ public class TheaterQuery {
 			
 			ResultSet result = statement.executeQuery(query.toString());
 			
-			Theater theater = null;
+			while (result.next()) {
+				theater = new Theater(result.getString("theaterId"), 
+						result.getString("name"),
+						result.getString("address"), 
+						result.getDouble("latitude"), 
+						result.getDouble("longitude"));
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		return theater;
+	}
+	
+	public static Theater queryTheater(String name, double lat, double lng) {
+		
+		Theater theater = null;
+		
+		try {
+			conn = DriverManager.getConnection(CONNECTION_STRING);
+			statement = conn.createStatement();
+			
+			StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_THEATERS);
+			query.append(" WHERE " + COLLUMN_LATITUDE + " IS " + lat);
+			query.append(" AND " + COLLUMN_LONGITUDE + " IS " + lng);
+			
+			ResultSet result = statement.executeQuery(query.toString());
 			
 			while (result.next()) {
 				theater = new Theater(result.getString("theaterId"), 
@@ -77,13 +106,12 @@ public class TheaterQuery {
 						result.getDouble("longitude"));
 			}
 			
-			return theater;
-			
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
 		}
 		
+		return theater;
 	}
 
 	public static Map<String, Theater> queryAllTheaters() {
