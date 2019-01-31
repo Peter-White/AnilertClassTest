@@ -43,18 +43,8 @@ public class Main {
 			
 			int userChosenRadius = 20;
 			
-			Map<String, JSONObject> animes = new MovieJSONQuery().queryAnimeJSON(userLatitude, userLongitude, userChosenRadius);
+			Map<String, JSONObject> animes = new MovieJSONQuery().queryAnimeJSONByInput(userLatitude, userLongitude, userChosenRadius);
 			
-			TheaterJSONQuery theaterJSONQuery = new TheaterJSONQuery();
-			
-			animes.forEach((key, value) -> {
-				Movie movie = MovieQuery.addMovieToDb(value);
-				theaterJSONQuery.addTheaterName(value);
-			});
-			
-			Set<String> theaters = theaterJSONQuery.getTheaterNames();
-			
-			theaters.forEach((name) -> System.out.println(name));
 			
 		} catch (JSONException | IOException e) {
 			// TODO Auto-generated catch block

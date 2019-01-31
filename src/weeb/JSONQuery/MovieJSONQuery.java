@@ -24,7 +24,7 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 		animeQuery = new HashMap<String, JSONObject>();
 	}
 	
-	public Map<String, JSONObject> queryAnimeJSON(Double lat, Double lng, int radius) throws IOException, JSONException {
+	public Map<String, JSONObject> queryAnimeJSONByInput(Double lat, Double lng, int radius) throws IOException, JSONException {
 		
 		urlPath = new StringBuilder();
 		urlPath.append(graceNoteURLStart);
@@ -39,8 +39,12 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 		JSONArray movies = readJsonArrayFromUrl(urlPath.toString());
 		
 		int count = 0;
+		TheaterJSONQuery theaterJSONQuery = new TheaterJSONQuery();
+		
 		while (count < movies.length()) {
 			JSONObject currentMovie = (JSONObject) movies.get(count);
+			theaterJSONQuery.addTheatersJSON(currentMovie, lat, lng, radius);
+			
 			if(isAnime(currentMovie) && !animeQuery.containsKey(currentMovie.getString("title"))) {
 				animeQuery.put(currentMovie.getString("title"), currentMovie);
 			}

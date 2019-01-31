@@ -8,6 +8,9 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import weeb.data.Theater;
 
 public class TheaterQuery {
@@ -127,61 +130,45 @@ public class TheaterQuery {
 												results.getString("address"), 
 												results.getDouble("latitude"), 
 												results.getDouble("longitude"));
-				theaterQuery.put(results.getString("name"), theater);
+				theaterQuery.put(results.getString("address"), theater);
 			}
-			return theaterQuery;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}
+		return theaterQuery;
 	}
 	
-	private static boolean isTheaterPresent(String name, String address) {
+	public static Theater addTheater(JSONObject placeByID) {
+		Theater theater = null;
 		
-		if(queryTheater(name, address) != null) {
-			return true;
-		}
-		return false;
-		
-	}
-	
-	private static boolean isTheaterPresent(String place_id) {
-		
-		if(queryTheater(place_id) != null) {
-			return true;
-		}
-		return false;
-		
-	}
-	
-	public static boolean addTheater(Map<String, Theater> theatersINDB, Theater theater) {
 		try {
-			
-			conn = DriverManager.getConnection(CONNECTION_STRING);
-			statement = conn.createStatement();
-			
-			StringBuilder addStatement = new StringBuilder("INSERT INTO " + TABLE_THEATERS + "(");
-			addStatement.append(COLLUMN_THEATERID + ",");
-			addStatement.append(COLLUMN_NAME + ",");
-			addStatement.append(COLLUMN_ADDRESS + ",");
-			addStatement.append(COLLUMN_LATITUDE + ",");
-			addStatement.append(COLLUMN_LONGITUDE + ") ");
-			addStatement.append("VALUES (");
-			addStatement.append("'" + theater.getTheaterId() + "'" + ",");
-			addStatement.append("'" + theater.getName() + "'" + ",");
-			addStatement.append("'" + theater.getAddress() + "'" + ",");
-			addStatement.append("'" + theater.getLatitude() + "'" + ",");
-			addStatement.append("'" + theater.getLongitude() + "'" + ")");
-			
-			statement.execute(addStatement.toString());
-			
-			theatersINDB.put(theater.getName(), theater);
-			
-			return true;
-			
-		} catch (SQLException e) {
+			theater = queryTheater(placeByID.getString("place_id"));
+			if(theater != null) {
+				
+				conn = DriverManager.getConnection(CONNECTION_STRING);
+				statement = conn.createStatement();
+				
+				StringBuilder addStatement = new StringBuilder("INSERT INTO " + TABLE_THEATERS + "(");
+				addStatement.append(COLLUMN_THEATERID + ",");
+				addStatement.append(COLLUMN_NAME + ",");
+				addStatement.append(COLLUMN_ADDRESS + ",");
+				addStatement.append(COLLUMN_LATITUDE + ",");
+				addStatement.append(COLLUMN_LONGITUDE + ") ");
+				addStatement.append("VALUES (");
+				addStatement.append("'" + theater.getTheaterId() + "'" + ",");
+				addStatement.append("'" + theater.getName() + "'" + ",");
+				addStatement.append("'" + theater.getAddress() + "'" + ",");
+				addStatement.append("'" + theater.getLatitude() + "'" + ",");
+				addStatement.append("'" + theater.getLongitude() + "'" + ")");
+				
+				statement.execute(addStatement.toString());
+			}
+					
+		} catch (SQLException | JSONException e) {
 			e.printStackTrace();
-			return false;
 		}
+
+		return theater;
 	}
 }
