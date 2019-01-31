@@ -3,9 +3,11 @@ package weeb.JSONQuery;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,6 +21,26 @@ public class TheaterJSONQuery {
 	private StringBuilder urlPath;
 	private final String googlePlacesSearch = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=";
 	private final String googlePlaceID = "https://maps.googleapis.com/maps/api/place/details/json?placeid=";
+	private Set<String> theaterNames;
+	
+	public TheaterJSONQuery() {
+		theaterNames = new HashSet<>();
+	}
+	
+	public Set<String> addTheaterName(JSONObject movie) {
+		try {
+			JSONArray showtimes = movie.getJSONArray("showtimes");
+			for (int i = 0; i < showtimes.length(); i++) {
+				JSONObject theater = showtimes.getJSONObject(i).getJSONObject("theatre");
+				theaterNames.add(theater.getString("name"));
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return theaterNames;
+	}
 	
 	public Theater createTheaterFromJSON(String id) {
 		
@@ -118,4 +140,9 @@ public class TheaterJSONQuery {
 		
 		return results;
 	}
+
+	public Set<String> getTheaterNames() {
+		return theaterNames;
+	}
+	
 }

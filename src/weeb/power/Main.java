@@ -9,13 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import weeb.DBQuery.MovieQuery;
 import weeb.DBQuery.TheaterQuery;
 import weeb.JSONQuery.MovieJSONQuery;
@@ -44,13 +43,19 @@ public class Main {
 			
 			int userChosenRadius = 20;
 			
-			moviesINDB.forEach((key, value) -> System.out.println(key));
-			
 			Map<String, JSONObject> animes = new MovieJSONQuery().queryAnimeJSON(userLatitude, userLongitude, userChosenRadius);
+			
+			TheaterJSONQuery theaterJSONQuery = new TheaterJSONQuery();
+			
 			animes.forEach((key, value) -> {
 				Movie movie = MovieQuery.addMovieToDb(value);
-				System.out.println(movie.getTitle());
+				theaterJSONQuery.addTheaterName(value);
 			});
+			
+			Set<String> theaters = theaterJSONQuery.getTheaterNames();
+			
+			theaters.forEach((name) -> System.out.println(name));
+			
 		} catch (JSONException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

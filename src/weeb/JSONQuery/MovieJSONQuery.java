@@ -17,8 +17,7 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 	private final String movieDBStart = "https://api.themoviedb.org/3/search/multi?api_key=";
 	public final String numDays = "&numDays=60";
 	private StringBuilder urlPath;
-	private JSONArray jsonArray;
-	
+
 	private Map<String, JSONObject> animeQuery;
 	
 	public MovieJSONQuery() {
@@ -135,5 +134,10 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 		  }
 		  
 		  return false;
-	  }
+	}
+
+	public Map<String, JSONObject> getAnimeQuery() {
+		return animeQuery;
+	}
+	
 }
