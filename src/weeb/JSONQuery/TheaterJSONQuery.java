@@ -87,7 +87,9 @@ public class TheaterJSONQuery {
 					.getJSONArray("candidates");
 			for (int i = 0; i < candidates.length(); i++) {
 				JSONObject candidate = candidates.getJSONObject(i);
-				if (candidate.getString("name").equals(name) || candidate.get("types").toString().contains("movie_theater")) {
+				if (candidate.getString("name").equals(name) 
+						|| candidate.get("types").toString().contains("movie_theater")
+						|| candidate.get("types").toString().contains("museum")) {
 					theaterPlaceId = candidate.getString("place_id");
 					break;
 				}

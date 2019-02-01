@@ -43,8 +43,9 @@ public class Main {
 			
 			int userChosenRadius = 20;
 			
-			Map<String, JSONObject> animes = new MovieJSONQuery().queryAnimeJSONByInput(userLatitude, userLongitude, userChosenRadius);
+			Map<String, Movie> animes = new MovieJSONQuery().queryAnimeJSONByInput(userLatitude, userLongitude, userChosenRadius);
 			
+			animes.forEach((key, value) -> System.out.println(value.getTitle()));
 			
 		} catch (JSONException | IOException e) {
 			// TODO Auto-generated catch block
