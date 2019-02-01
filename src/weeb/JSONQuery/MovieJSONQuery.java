@@ -6,10 +6,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import weeb.data.APIKeys;
+import weeb.data.Movie;
+import weeb.data.Theater;
 
 public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 
@@ -18,13 +23,13 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 	public final String numDays = "&numDays=60";
 	private StringBuilder urlPath;
 
-	private Map<String, JSONObject> animeQuery;
+	private Map<String, Movie> animeQuery;
 	
 	public MovieJSONQuery() {
-		animeQuery = new HashMap<String, JSONObject>();
+		animeQuery = new HashMap<String, Movie>();
 	}
 	
-	public Map<String, JSONObject> queryAnimeJSONByInput(Double lat, Double lng, int radius) throws IOException, JSONException {
+	public Map<String, Movie> queryAnimeJSONByInput(Double lat, Double lng, int radius) throws IOException, JSONException {
 		
 		urlPath = new StringBuilder();
 		urlPath.append(graceNoteURLStart);
@@ -46,7 +51,7 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 			theaterJSONQuery.addTheatersJSON(currentMovie, lat, lng, radius);
 			
 			if(isAnime(currentMovie) && !animeQuery.containsKey(currentMovie.getString("title"))) {
-				animeQuery.put(currentMovie.getString("title"), currentMovie);
+				animeQuery.put(currentMovie.getString("title"), JSONObjectToMovie(currentMovie));
 			}
 			count++;
 		}
@@ -54,7 +59,7 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 		return animeQuery;
 	}
 	
-	public Map<String, JSONObject> querySingleTheaterAnime(Double lat, Double lng) throws IOException, JSONException {
+	public Map<String, Movie> querySingleTheaterAnime(Double lat, Double lng) throws IOException, JSONException {
 		urlPath = new StringBuilder();
 		urlPath.append(graceNoteURLStart);
 		urlPath.append(numDays);
@@ -71,7 +76,7 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 		while (count < movies.length()) {
 			JSONObject currentMovie = (JSONObject) movies.get(count);
 			if(isAnime(currentMovie) && !animeQuery.containsKey(currentMovie.getString("title"))) {
-				animeQuery.put(currentMovie.getString("title"), currentMovie);
+				animeQuery.put(currentMovie.getString("title"), JSONObjectToMovie(currentMovie));
 			}
 			count++;
 		}
@@ -139,9 +144,65 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 		  
 		  return false;
 	}
+	
+	public Movie JSONObjectToMovie(JSONObject movieJSON) {
+		Movie movie = null;
+		
+		try {
+			movie = new Movie();
+			movie.setMovieId(movieJSON.getString("tmsId"));
+			movie.setTitle(movieJSON.getString("title"));
+			
+			String description;
+			if(movieJSON.has("shortDescription")) {
+				description = movieJSON.getString("shortDescription");
+			} else if (movieJSON.has("longDescription")) {
+				description = movieJSON.getString("longDescription");
+			} else {
+				description = null;
+			}
+			movie.setDescription(description);
+			
+			movie.setRuntime(runtimeConvert(movieJSON.getString("runTime")));
+			if(movieJSON.has("ratings")) {
+				JSONArray ratings = movieJSON.getJSONArray("ratings");
+				JSONObject rating = (JSONObject) ratings.get(0);
+				movie.setRatingID(rating.getString("code"));
+			} else {
+				movie.setRatingID("NR");
+			}
+			
+			if(movieJSON.has("officialUrl")) {
+				movie.setOfficialLink(movieJSON.getString("officialUrl"));
+			} else {
+				movie.setOfficialLink(null);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return movie;
+	}
+	
+//	public Map<Integer, Theater> getTheatersFromMovieJSON(JSONObject movie) {
+//		TheaterJSONQuery theaterJSONQuery = new TheaterJSONQuery();
+//	}
 
-	public Map<String, JSONObject> getAnimeQuery() {
+	public Map<String, Movie> getAnimeQuery() {
 		return animeQuery;
 	}
 	
+	public static int runtimeConvert(String runTime) {
+		Pattern regExPattern = Pattern.compile("PT(\\d*)H(\\d*)M");
+		Matcher matcher = regExPattern.matcher("PT01H40M");
+		
+		int minutes = 0;
+		while (matcher.find()) {
+			minutes += Integer.parseInt(matcher.group(2));
+			minutes += Integer.parseInt(matcher.group(1)) * 60;
+		}
+		
+		return minutes;
+	}
 }

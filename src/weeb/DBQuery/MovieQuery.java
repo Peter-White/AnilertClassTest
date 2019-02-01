@@ -42,7 +42,7 @@ public class MovieQuery {
 			
 			ResultSet results = statement.executeQuery("SELECT * FROM " + TABLE_MOVIES);
 			while (results.next()) {
-				Movie movie = new Movie(results.getInt(COLLUMN_MOVIEID), 
+				Movie movie = new Movie(results.getString(COLLUMN_MOVIEID), 
 										results.getString(COLLUMN_TITLE), 
 										results.getString(COLLUMN_DESCRIPTION), 
 										results.getInt(COLLUMN_RUNTIME), 
@@ -62,6 +62,7 @@ public class MovieQuery {
 	}
 	
 	public static Movie queryMovie(int movieId) {
+		Movie movie = null;
 		
 		try {
 			conn = DriverManager.getConnection(CONNECTION_STRING);
@@ -72,29 +73,27 @@ public class MovieQuery {
 			
 			ResultSet result = statement.executeQuery(query.toString());
 			
-			Movie movie = null;
-			
 			while (result.next()) {
 
-				movie = new Movie(result.getInt(COLLUMN_MOVIEID), 
+				movie = new Movie(result.getString(COLLUMN_MOVIEID), 
 						result.getString(COLLUMN_TITLE), 
 						result.getString(COLLUMN_DESCRIPTION), 
 						result.getInt(COLLUMN_RUNTIME), 
 						result.getString(COLLUMN_RATING), 
 						result.getString(COLLUMN_OFFICIALSITE));
 			}
-			
-			return movie;
-			
+
 		} catch (SQLException e) {
 			System.out.println("queryMovie triggered");
 			e.printStackTrace();
 			return null;
 		}
 		
+		return movie;
 	}
 	
 	public static Movie queryMovie(String title) {
+		Movie movie = null;
 		
 		try {
 			conn = DriverManager.getConnection(CONNECTION_STRING);
@@ -105,11 +104,9 @@ public class MovieQuery {
 			
 			ResultSet result = statement.executeQuery(query.toString());
 			
-			Movie movie = null;
-			
 			while (result.next()) {
 
-				movie = new Movie(result.getInt(COLLUMN_MOVIEID), 
+				movie = new Movie(result.getString(COLLUMN_MOVIEID), 
 						result.getString(COLLUMN_TITLE), 
 						result.getString(COLLUMN_DESCRIPTION), 
 						result.getInt(COLLUMN_RUNTIME), 
@@ -117,14 +114,13 @@ public class MovieQuery {
 						result.getString(COLLUMN_OFFICIALSITE));
 			}
 			
-			return movie;
-			
 		} catch (SQLException e) {
 			System.out.println("queryMovie triggered");
 			e.printStackTrace();
 			return null;
 		}
 		
+		return movie;
 	}
 	
 //	public static Map<String, Movie> mergeMovieJSONToDb(Map<String, Movie> moviesInDB, Map<String, JSONObject> JSONMovies) {

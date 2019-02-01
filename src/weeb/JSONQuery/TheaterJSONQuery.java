@@ -21,7 +21,7 @@ public class TheaterJSONQuery {
 	private StringBuilder urlPath;
 	private final String googlePlacesSearch = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=";
 	private final String googlePlaceID = "https://maps.googleapis.com/maps/api/place/details/json?placeid=";
-	private Map<Integer, JSONObject> theaterAddresses;
+	private Map<Integer, Theater> theaterAddresses;
 	
 	public TheaterJSONQuery() {
 		theaterAddresses = new HashMap<>();
@@ -34,7 +34,8 @@ public class TheaterJSONQuery {
 				JSONObject theater = showtimes.getJSONObject(i).getJSONObject("theatre");
 				if (!theaterAddresses.containsKey(theater.getInt("id"))) {
 					String placeId = queryTheaterPlaceIds(theater.getString("name"), lat, lng, radius);
-					theaterAddresses.put(theater.getInt("id"), getTheaterJSON(placeId));
+					int id = theater.getInt("id");
+					theaterAddresses.put(theater.getInt("id"), JSONObjectToTheater(id, getTheaterJSON(placeId)));
 				}
 			}
 		} catch (JSONException e) {

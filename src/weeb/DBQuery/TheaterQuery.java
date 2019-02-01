@@ -173,7 +173,7 @@ public class TheaterQuery {
 		return theaterQuery;
 	}
 	
-	public static Theater addTheater(Theater theater) {
+	public static Theater addTheaterToDB(Theater theater) {
 		
 		try {
 			theater = queryTheater(theater.getTheaterId());

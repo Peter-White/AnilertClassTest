@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class Movie {
 
-	private int movieId;
+	private String movieId;
 	private String title;
 	private String description;
 	private int runtime;
@@ -13,7 +13,7 @@ public class Movie {
 	
 	private HashMap<Integer, Showtime> showtimes;
 	
-	public Movie(int movieId, String title, String description, int runtime, String rating,
+	public Movie(String movieId, String title, String description, int runtime, String rating,
 			String officialLink) {
 		super();
 		this.movieId = movieId;
@@ -24,12 +24,16 @@ public class Movie {
 		this.officialLink = officialLink;
 		showtimes = new HashMap<>();
 	}
+	
+	public Movie() {
+		
+	}
 
-	public int getMovieId() {
+	public String getMovieId() {
 		return movieId;
 	}
 
-	public void setMovieId(int movieId) {
+	public void setMovieId(String movieId) {
 		this.movieId = movieId;
 	}
 
