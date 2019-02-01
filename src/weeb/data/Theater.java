@@ -2,31 +2,41 @@ package weeb.data;
 
 public class Theater {
 
-	private String theaterId;
+	private int theaterId;
 	private String name;
 	private String address;
 	private double latitude;
 	private double longitude;
+	private String place_id;
 	
-	public Theater(String theaterId, String name, String address, double latitude, double longitude) {
+	public Theater(int theaterId, String name, String address, double latitude, double longitude, String place_id) {
 		super();
 		this.theaterId = theaterId;
 		this.name = name;
 		this.address = address;
 		this.latitude = latitude;
 		this.longitude = longitude;
+		this.place_id = place_id;
 	}
 	
 	public Theater() {
 		
 	}
 
-	public String getTheaterId() {
+	public int getTheaterId() {
 		return theaterId;
 	}
 
-	public void setTheaterId(String theaterId) {
+	public void setTheaterId(int theaterId) {
 		this.theaterId = theaterId;
+	}
+
+	public String getPlace_id() {
+		return place_id;
+	}
+
+	public void setPlace_id(String place_id) {
+		this.place_id = place_id;
 	}
 
 	public String getName() {

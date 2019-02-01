@@ -126,6 +126,25 @@ public class TheaterJSONQuery {
 
 		return results;
 	}
+	
+	public Theater JSONObjectToTheater(int id, JSONObject placeByID) {
+		Theater theater = null;
+		
+		try {
+			theater = new Theater();
+			theater.setTheaterId(id);
+			theater.setName(placeByID.getString("name"));
+			theater.setAddress("formatted_address");
+			theater.setLatitude(placeByID.getJSONObject("geometry").getJSONObject("location").getDouble("lat"));
+			theater.setLongitude(placeByID.getJSONObject("geometry").getJSONObject("location").getDouble("lng"));
+			theater.setPlace_id("place_id");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return theater;
+	}
 
 	public Map<Integer, JSONObject> getTheaterMap() {
 		return theaterAddresses;

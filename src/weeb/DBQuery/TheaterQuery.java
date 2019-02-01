@@ -24,6 +24,7 @@ public class TheaterQuery {
 	private static final String COLLUMN_ADDRESS = "address";
 	private static final String COLLUMN_LATITUDE = "latitude";
 	private static final String COLLUMN_LONGITUDE = "longitude";
+	private static final String COLLUMN_PLACE_ID = "place_id";
 	
 	public static Connection conn;
 	public static Statement statement;
@@ -43,11 +44,12 @@ public class TheaterQuery {
 			ResultSet result = statement.executeQuery(query.toString());
 			
 			while (result.next()) {
-				theater = new Theater(result.getString("theaterId"), 
+				theater = new Theater(result.getInt("theaterId"), 
 						result.getString("name"),
 						result.getString("address"), 
 						result.getDouble("latitude"), 
-						result.getDouble("longitude"));
+						result.getDouble("longitude"),
+						result.getString("place_id"));
 			}
 			
 		} catch (SQLException e) {
@@ -58,7 +60,7 @@ public class TheaterQuery {
 		return theater;
 	}
 	
-	public static Theater queryTheater(String place_id) {
+	public static Theater queryTheater(int id) {
 		
 		Theater theater = null;
 		
@@ -67,16 +69,17 @@ public class TheaterQuery {
 			statement = conn.createStatement();
 			
 			StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_THEATERS);
-			query.append(" WHERE " + COLLUMN_THEATERID + " IS " + "'" + place_id + "'");
+			query.append(" WHERE " + COLLUMN_THEATERID + " IS " + "'" + id + "'");
 			
 			ResultSet result = statement.executeQuery(query.toString());
 			
 			while (result.next()) {
-				theater = new Theater(result.getString("theaterId"), 
+				theater = new Theater(result.getInt("theaterId"), 
 						result.getString("name"),
 						result.getString("address"), 
 						result.getDouble("latitude"), 
-						result.getDouble("longitude"));
+						result.getDouble("longitude"),
+						result.getString("place_id"));
 			}
 			
 		} catch (SQLException e) {
@@ -102,11 +105,12 @@ public class TheaterQuery {
 			ResultSet result = statement.executeQuery(query.toString());
 			
 			while (result.next()) {
-				theater = new Theater(result.getString("theaterId"), 
+				theater = new Theater(result.getInt("theaterId"), 
 						result.getString("name"),
 						result.getString("address"), 
 						result.getDouble("latitude"), 
-						result.getDouble("longitude"));
+						result.getDouble("longitude"),
+						result.getString("place_id"));
 			}
 			
 		} catch (SQLException e) {
@@ -125,11 +129,12 @@ public class TheaterQuery {
 			
 			ResultSet results = statement.executeQuery("SELECT * FROM " + TABLE_THEATERS);
 			while (results.next()) {
-				Theater theater = new Theater(results.getString("theaterId"), 
-												results.getString("name"),
-												results.getString("address"), 
-												results.getDouble("latitude"), 
-												results.getDouble("longitude"));
+				Theater theater = new Theater(results.getInt("theaterId"), 
+						results.getString("name"),
+						results.getString("address"), 
+						results.getDouble("latitude"), 
+						results.getDouble("longitude"),
+						results.getString("place_id"));
 				theaterQuery.put(results.getString("address"), theater);
 			}
 		} catch (SQLException e) {
@@ -139,11 +144,10 @@ public class TheaterQuery {
 		return theaterQuery;
 	}
 	
-	public static Theater addTheater(JSONObject placeByID) {
-		Theater theater = null;
+	public static Theater addTheater(Theater theater) {
 		
 		try {
-			theater = queryTheater(placeByID.getString("place_id"));
+			theater = queryTheater(theater.getTheaterId());
 			if(theater != null) {
 				
 				conn = DriverManager.getConnection(CONNECTION_STRING);
@@ -154,18 +158,20 @@ public class TheaterQuery {
 				addStatement.append(COLLUMN_NAME + ",");
 				addStatement.append(COLLUMN_ADDRESS + ",");
 				addStatement.append(COLLUMN_LATITUDE + ",");
-				addStatement.append(COLLUMN_LONGITUDE + ") ");
+				addStatement.append(COLLUMN_LONGITUDE + ",");
+				addStatement.append(COLLUMN_PLACE_ID + ") ");
 				addStatement.append("VALUES (");
 				addStatement.append("'" + theater.getTheaterId() + "'" + ",");
 				addStatement.append("'" + theater.getName() + "'" + ",");
 				addStatement.append("'" + theater.getAddress() + "'" + ",");
 				addStatement.append("'" + theater.getLatitude() + "'" + ",");
-				addStatement.append("'" + theater.getLongitude() + "'" + ")");
+				addStatement.append("'" + theater.getLongitude() + "'" + ",");
+				addStatement.append("'" + theater.getPlace_id()  + "'" + ")");
 				
 				statement.execute(addStatement.toString());
 			}
 					
-		} catch (SQLException | JSONException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
