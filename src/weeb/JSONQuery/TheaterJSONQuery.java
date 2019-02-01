@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import weeb.data.APIKeys;
+import weeb.data.Movie;
 import weeb.data.Theater;
 import weeb.power.JSONObjectReader;
 import weeb.power.JSONReader;
@@ -147,7 +148,7 @@ public class TheaterJSONQuery {
 		return theater;
 	}
 
-	public Map<Integer, JSONObject> getTheaterMap() {
+	public Map<Integer, Theater> getTheaterMap() {
 		return theaterAddresses;
 	}
 
