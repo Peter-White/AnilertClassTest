@@ -90,6 +90,35 @@ public class TheaterQuery {
 		return theater;
 	}
 	
+	public static Theater queryTheater(String place_id) {
+		Theater theater = null;
+		
+		try {
+			conn = DriverManager.getConnection(CONNECTION_STRING);
+			statement = conn.createStatement();
+			
+			StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_THEATERS);
+			query.append(" WHERE " + COLLUMN_THEATERID + " IS " + "'" + place_id + "'");
+			
+			ResultSet result = statement.executeQuery(query.toString());
+			
+			while (result.next()) {
+				theater = new Theater(result.getInt("theaterId"), 
+						result.getString("name"),
+						result.getString("address"), 
+						result.getDouble("latitude"), 
+						result.getDouble("longitude"),
+						result.getString("place_id"));
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		return theater;
+	}
+	
 	public static Theater queryTheater(String name, double lat, double lng) {
 		
 		Theater theater = null;
@@ -148,7 +177,7 @@ public class TheaterQuery {
 		
 		try {
 			theater = queryTheater(theater.getTheaterId());
-			if(theater != null) {
+			if(theater == null) {
 				
 				conn = DriverManager.getConnection(CONNECTION_STRING);
 				statement = conn.createStatement();
