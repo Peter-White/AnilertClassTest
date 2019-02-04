@@ -27,6 +27,7 @@ public class Main {
 	
 	public static Map<String, Theater> theatersINDB = TheaterQuery.queryAllTheaters();
 	public static Map<String, Movie> moviesINDB = MovieQuery.queryAllMovies();
+//	public static ArrayList<Showtime> showtimesINDB =
 	
 	public static void main(String[] args) {
 		
@@ -41,7 +42,7 @@ public class Main {
 			double userLatitude = userLocation.getJSONObject("geometry").getJSONObject("location").getDouble("lat");
 			double userLongitude = userLocation.getJSONObject("geometry").getJSONObject("location").getDouble("lng");
 			
-			int userChosenRadius = 20;
+			int userChosenRadius = 10;
 			
 			Map<String, Movie> animes = new MovieJSONQuery().queryAnimeJSONByInput(userLatitude, userLongitude, userChosenRadius);
 			

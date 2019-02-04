@@ -36,7 +36,9 @@ public class TheaterJSONQuery {
 				if (!theaterAddresses.containsKey(theater.getInt("id"))) {
 					String placeId = queryTheaterPlaceIds(theater.getString("name"), lat, lng, radius);
 					int id = theater.getInt("id");
-					theaterAddresses.put(theater.getInt("id"), JSONObjectToTheater(id, getTheaterJSON(placeId)));
+					if(placeId != null) {
+						theaterAddresses.put(theater.getInt("id"), JSONObjectToTheater(id, getTheaterJSON(placeId)));
+					}
 				}
 			}
 		} catch (JSONException e) {
@@ -49,15 +51,15 @@ public class TheaterJSONQuery {
 
 		JSONObject theaterJSON = null;
 
-		StringBuilder url = new StringBuilder(googlePlaceID);
-		url.append(placeId);
-		url.append("&fields=address_component,adr_address,alt_id,formatted_address,geometry,"
+		urlPath = new StringBuilder(googlePlaceID);
+		urlPath.append(placeId);
+		urlPath.append("&fields=address_component,adr_address,alt_id,formatted_address,geometry,"
 				+ "icon,id,name,permanently_closed,photo,place_id,plus_code,scope,type,url,utc_offset,vicinity");
-		url.append("&key=");
-		url.append(APIKeys.getGooglePlacesAPIKey());
+		urlPath.append("&key=");
+		urlPath.append(APIKeys.getGooglePlacesAPIKey());
 
 		try {
-			theaterJSON = new JSONObjectReader().readJsonObjectFromUrl(url.toString()).getJSONObject("result");
+			theaterJSON = new JSONObjectReader().readJsonObjectFromUrl(urlPath.toString()).getJSONObject("result");
 		} catch (IOException | JSONException e) {
 			e.printStackTrace();
 		}
@@ -70,32 +72,37 @@ public class TheaterJSONQuery {
 		String theaterPlaceId = null;
 		String nameConverted = name.replaceAll(" ", "%20");
 
-		StringBuilder url = new StringBuilder(googlePlacesSearch);
-		url.append(nameConverted);
-		url.append("&inputtype=textquery");
-		url.append("&fields=place_id,name,types");
-		url.append("&locationbias=circle:");
-		url.append(radius * 1000);
-		url.append("@");
-		url.append(lat + ",");
-		url.append(lng);
-		url.append("&key=");
-		url.append(APIKeys.getGooglePlacesAPIKey());
+		urlPath = new StringBuilder(googlePlacesSearch);
+		urlPath.append(nameConverted);
+		urlPath.append("&inputtype=textquery");
+		urlPath.append("&fields=place_id,name,types");
+		urlPath.append("&locationbias=circle:");
+		urlPath.append(radius * 1000);
+		urlPath.append("@");
+		urlPath.append(lat + ",");
+		urlPath.append(lng);
+		urlPath.append("&key=");
+		urlPath.append(APIKeys.getGooglePlacesAPIKey());
 
 		try {
-			JSONArray candidates = new JSONObjectReader().readJsonObjectFromUrl(url.toString())
+			JSONArray candidates = new JSONObjectReader().readJsonObjectFromUrl(urlPath.toString())
 					.getJSONArray("candidates");
 			for (int i = 0; i < candidates.length(); i++) {
 				JSONObject candidate = candidates.getJSONObject(i);
 				if (candidate.getString("name").equals(name) 
 						|| candidate.get("types").toString().contains("movie_theater")
-						|| candidate.get("types").toString().contains("museum")) {
+						|| candidate.get("types").toString().contains("museum")
+						|| candidates.length() == 1) {
+					
 					theaterPlaceId = candidate.getString("place_id");
 					break;
 				}
 			}
+			
+			if(theaterPlaceId == null) {
+				theaterPlaceId = candidates.getJSONObject(0).getString("place_id");
+			}
 		} catch (JSONException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -107,15 +114,15 @@ public class TheaterJSONQuery {
 		Map<String, JSONObject> results = new HashMap<String, JSONObject>();
 		String addressConverted = address.replaceAll(" ", "%20");
 
-		StringBuilder url = new StringBuilder(googlePlacesSearch);
-		url.append(addressConverted);
-		url.append("&inputtype=textquery");
-		url.append("&fields=place_id,photos,formatted_address,name,rating,opening_hours,geometry");
-		url.append("&key=");
-		url.append(APIKeys.getGooglePlacesAPIKey());
+		urlPath = new StringBuilder(googlePlacesSearch);
+		urlPath.append(addressConverted);
+		urlPath.append("&inputtype=textquery");
+		urlPath.append("&fields=place_id,photos,formatted_address,name,rating,opening_hours,geometry");
+		urlPath.append("&key=");
+		urlPath.append(APIKeys.getGooglePlacesAPIKey());
 
 		try {
-			JSONArray candidates = new JSONObjectReader().readJsonObjectFromUrl(url.toString())
+			JSONArray candidates = new JSONObjectReader().readJsonObjectFromUrl(urlPath.toString())
 					.getJSONArray("candidates");
 
 			for (int i = 0; i < candidates.length(); i++) {
