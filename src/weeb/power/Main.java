@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
@@ -25,11 +26,15 @@ import weeb.data.Theater;
 
 public class Main {
 	
+	private static Scanner scanner = new Scanner(System.in);
+	
 	public static Map<String, Theater> theatersINDB = TheaterQuery.queryAllTheaters();
 	public static Map<String, Movie> moviesINDB = MovieQuery.queryAllMovies();
 //	public static ArrayList<Showtime> showtimesINDB =
 	
 	public static void main(String[] args) {
+		
+		Map<Integer, JSONObject> placeCandidates = null;
 		
 		Map<String, JSONObject> userResults = new TheaterJSONQuery().userLocationSearchResults("Boston");
 		

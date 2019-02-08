@@ -5,18 +5,22 @@ import java.util.HashMap;
 public class Showtime {
 
 	private int showtimeId;
-	private String theaterID;
-	private int movieID;
+	private int theaterID;
+	private String movieID;
 	private String dateTime;
 	private String purchaseLink;
 	
-	public Showtime(int showtimeId, String theaterID, int movieID, String dateTime, String purchaseLink) {
+	public Showtime(int showtimeId, int theaterID, String movieID, String dateTime, String purchaseLink) {
 		super();
 		this.showtimeId = showtimeId;
 		this.theaterID = theaterID;
 		this.movieID = movieID;
 		this.dateTime = dateTime;
 		this.purchaseLink = purchaseLink;
+	}
+	
+	public Showtime() {
+		
 	}
 
 	public int getShowtimeId() {
@@ -27,19 +31,19 @@ public class Showtime {
 		this.showtimeId = showtimeId;
 	}
 
-	public String getTheaterID() {
+	public int getTheaterID() {
 		return theaterID;
 	}
 
-	public void setTheaterID(String theaterID) {
+	public void setTheaterID(int theaterID) {
 		this.theaterID = theaterID;
 	}
 
-	public int getMovieID() {
+	public String getMovieID() {
 		return movieID;
 	}
 
-	public void setMovieID(int movieID) {
+	public void setMovieID(String movieID) {
 		this.movieID = movieID;
 	}
 
