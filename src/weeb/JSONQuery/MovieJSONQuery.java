@@ -23,13 +23,13 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 	public final String numDays = "&numDays=60";
 	private StringBuilder urlPath;
 
-	private Map<String, Movie> animeQuery;
+	private Map<String, JSONObject> movieJSONQuery;
 	
 	public MovieJSONQuery() {
-		animeQuery = new HashMap<String, Movie>();
+		movieJSONQuery = new HashMap<String, JSONObject>();
 	}
 	
-	public Map<String, Movie> queryAnimeJSONByInput(Double lat, Double lng, int radius) throws IOException, JSONException {
+	public Map<String, JSONObject> queryAnimeJSONByInput(double lat, double lng, double radius) throws IOException, JSONException {
 		
 		urlPath = new StringBuilder();
 		urlPath.append(graceNoteURLStart);
@@ -44,44 +44,20 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 		JSONArray movies = readJsonArrayFromUrl(urlPath.toString());
 		
 		int count = 0;
-		TheaterJSONQuery theaterJSONQuery = new TheaterJSONQuery();
 		
 		while (count < movies.length()) {
-			JSONObject currentMovie = (JSONObject) movies.get(count);
-			theaterJSONQuery.addTheatersJSON(currentMovie, lat, lng, radius);
 			
-			if(isAnime(currentMovie) && !animeQuery.containsKey(currentMovie.getString("title"))) {
-				animeQuery.put(currentMovie.getString("title"), JSONObjectToMovie(currentMovie));
-			}
-			count++;
-		}
-		
-		return animeQuery;
-	}
-	
-	public Map<String, Movie> querySingleTheaterAnime(Double lat, Double lng) throws IOException, JSONException {
-		urlPath = new StringBuilder();
-		urlPath.append(graceNoteURLStart);
-		urlPath.append(numDays);
-		urlPath.append("&lat=" + lat);
-		urlPath.append("&lng=" + lng);
-		urlPath.append("&radius=0.005");
-		urlPath.append("&units=km");
-		urlPath.append("&api_key=");
-		urlPath.append(APIKeys.getGracenoteAPIKey());
-		
-		JSONArray movies = readJsonArrayFromUrl(urlPath.toString());
-		
-		int count = 0;
-		while (count < movies.length()) {
 			JSONObject currentMovie = (JSONObject) movies.get(count);
-			if(isAnime(currentMovie) && !animeQuery.containsKey(currentMovie.getString("title"))) {
-				animeQuery.put(currentMovie.getString("title"), JSONObjectToMovie(currentMovie));
-			}
+			movieJSONQuery.put(currentMovie.getString("title"), currentMovie);
+//			theaterJSONQuery.addTheatersJSON(currentMovie, lat, lng, radius);
+			
+//			if(isAnime(currentMovie) && !animeQuery.containsKey(currentMovie.getString("title"))) {
+//				animeQuery.put(currentMovie.getString("title"), JSONObjectToMovie(currentMovie));
+//			}
 			count++;
 		}
 		
-		return animeQuery;
+		return movieJSONQuery;
 	}
 	
 	public String currentDate() {
@@ -143,54 +119,6 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 		  }
 		  
 		  return false;
-	}
-	
-	private Movie JSONObjectToMovie(JSONObject movieJSON) {
-		Movie movie = null;
-		
-		try {
-			movie = new Movie();
-			movie.setMovieId(movieJSON.getString("tmsId"));
-			movie.setTitle(movieJSON.getString("title"));
-			
-			String description;
-			if(movieJSON.has("shortDescription")) {
-				description = movieJSON.getString("shortDescription");
-			} else if (movieJSON.has("longDescription")) {
-				description = movieJSON.getString("longDescription");
-			} else {
-				description = null;
-			}
-			movie.setDescription(description);
-			
-			movie.setRuntime(runtimeConvert(movieJSON.getString("runTime")));
-			if(movieJSON.has("ratings")) {
-				JSONArray ratings = movieJSON.getJSONArray("ratings");
-				JSONObject rating = (JSONObject) ratings.get(0);
-				movie.setRatingID(rating.getString("code"));
-			} else {
-				movie.setRatingID("NR");
-			}
-			
-			if(movieJSON.has("officialUrl")) {
-				movie.setOfficialLink(movieJSON.getString("officialUrl"));
-			} else {
-				movie.setOfficialLink(null);
-			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return movie;
-	}
-	
-//	public Map<Integer, Theater> getTheatersFromMovieJSON(JSONObject movie) {
-//		TheaterJSONQuery theaterJSONQuery = new TheaterJSONQuery();
-//	}
-
-	public Map<String, Movie> getAnimeQuery() {
-		return animeQuery;
 	}
 	
 	public int runtimeConvert(String runTime) {

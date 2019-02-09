@@ -11,7 +11,7 @@ import weeb.data.Showtime;
 
 public class ShowtimeJSONQuery {
 
-	public List<Showtime> getShowtimesFromMovieShowtimeJSONArray(String movieID, JSONArray showtimesJSONArray) {
+	public List<Showtime> queryShowtimesByMovieShowtimeJSONArray(String movieID, JSONArray showtimesJSONArray) {
 		List<Showtime> showtimes = new ArrayList<>();
 		
 		try {

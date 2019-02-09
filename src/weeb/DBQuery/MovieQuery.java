@@ -121,26 +121,6 @@ public class MovieQuery {
 		return movie;
 	}
 	
-//	public static Map<String, Movie> mergeMovieJSONToDb(Map<String, Movie> moviesInDB, Map<String, JSONObject> JSONMovies) {
-//		
-//		try {
-//			conn = DriverManager.getConnection(CONNECTION_STRING);
-//			statement = conn.createStatement();
-//			
-//			JSONMovies.forEach((key, value) -> {
-//				if(!moviesInDB.containsKey(key)) {
-//					
-//				}
-//			});
-//			
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//		
-//	}
-	
 	public static Movie addMovieToDb(Movie movie) {
 		
 		try {

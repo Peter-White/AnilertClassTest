@@ -34,31 +34,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		Map<Integer, JSONObject> placeCandidates = null;
 		
-		Map<String, JSONObject> userResults = new TheaterJSONQuery().userLocationSearchResults("Boston");
-		
-		userResults.forEach((key, value) -> System.out.println(key + ": " + value));
-		
-		JSONObject userLocation = userResults.get("Boston, MA, USA");
-		
-		try {
-
-			double userLatitude = userLocation.getJSONObject("geometry").getJSONObject("location").getDouble("lat");
-			double userLongitude = userLocation.getJSONObject("geometry").getJSONObject("location").getDouble("lng");
-			
-			int userChosenRadius = 10;
-			
-			Map<String, Movie> animes = new MovieJSONQuery().queryAnimeJSONByInput(userLatitude, userLongitude, userChosenRadius);
-			
-			animes.forEach((key, value) -> {
-				System.out.println(key);
-			});
-			
-		} catch (JSONException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 	}
 
