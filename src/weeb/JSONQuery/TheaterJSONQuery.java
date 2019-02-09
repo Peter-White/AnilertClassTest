@@ -138,7 +138,7 @@ public class TheaterJSONQuery {
 		return results;
 	}
 	
-	public Theater JSONObjectToTheater(int id, JSONObject placeByID) {
+	private Theater JSONObjectToTheater(int id, JSONObject placeByID) {
 		Theater theater = null;
 		
 		try {

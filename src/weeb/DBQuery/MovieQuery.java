@@ -141,55 +141,26 @@ public class MovieQuery {
 //		
 //	}
 	
-	public static Movie addMovieToDb(JSONObject movieJSON) {
-		Movie movie = null;
+	public static Movie addMovieToDb(Movie movie) {
 		
 		try {
-			movie = queryMovie(movieJSON.getString("title"));
-			if(queryMovie(movieJSON.getString("title")) == null) {
+			if(queryMovie(movie.getTitle()) == null) {
 				StringBuilder insertCommand = new StringBuilder("INSERT INTO " + TABLE_MOVIES);
 				insertCommand.append("(" + COLLUMN_TITLE + "," + COLLUMN_DESCRIPTION + "," + COLLUMN_RUNTIME + "," + COLLUMN_RATING + "," + COLLUMN_OFFICIALSITE + ")");
 				insertCommand.append(" VALUES (");
-				insertCommand.append("\"" + movieJSON.getString("title").replaceAll("\"", "'") + "\"");
-				
-				String description = null;
-				if(movieJSON.has("shortDescription")) {
-					description = movieJSON.getString("shortDescription").replaceAll("\"", "'");
-					insertCommand.append("," + "\"" + description + "\"");
-				} else if (movieJSON.has("longDescription")) {
-					description = movieJSON.getString("longDescription").replaceAll("\"", "'");
-					insertCommand.append("," + "\"" + description + "\"");
-				} else {
-					insertCommand.append("," + description);
-				}
-				
-				insertCommand.append("," + runtimeConvert(movieJSON.getString("runTime")));
-				
-				if(movieJSON.has("ratings")) {
-					JSONArray ratings = movieJSON.getJSONArray("ratings");
-					JSONObject rating = (JSONObject) ratings.get(0);
-					
-					insertCommand.append("," + "\"" + rating.getString("code") + "\"");
-				} else {
-					insertCommand.append("," + "\"" + "NR" + "\"");
-				}
-				
-				if(movieJSON.has("officialUrl")) {
-					insertCommand.append("," + "\"" + movieJSON.getString("officialUrl") + "\"");
-				} else {
-					insertCommand.append("," + null);
-				}
-				
+				insertCommand.append("\"" + movie.getTitle().replaceAll("\"", "'") + "\"");
+				insertCommand.append("," + movie.getDescription());
+				insertCommand.append(movie.getRatingID());
+				insertCommand.append(movie.getOfficialLink());
 				insertCommand.append(")");
 				
 				System.out.println(insertCommand.toString());
 				
 				statement.execute(insertCommand.toString());
-				movie = queryMovie(movieJSON.getString("title"));
+				movie = queryMovie(movie.getTitle());
 			}
 			
-		} catch (JSONException | SQLException e) {
-			System.out.println("addMovieToDb triggered");
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		

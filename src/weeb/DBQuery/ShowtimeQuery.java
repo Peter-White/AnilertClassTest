@@ -50,4 +50,67 @@ public class ShowtimeQuery {
 		
 		return showtimes;
 	}
+	
+	public static Showtime queryShowtime(int showtimeId) {
+		Showtime showtime = null;
+		
+		try {
+			conn = DriverManager.getConnection(CONNECTION_STRING);
+			statement = conn.createStatement();
+			
+			StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_SHOWTIMES);
+			query.append(" WHERE " + COLLUMN_SHOWTIMEID + " IS " + showtimeId);
+			
+			ResultSet result = statement.executeQuery(query.toString());
+			
+			while (result.next()) {
+
+				showtime = new Showtime(result.getInt(COLLUMN_SHOWTIMEID), 
+						result.getInt(COLLUMN_THEATERID), 
+						result.getString(COLLUMN_MOVIEID), 
+						result.getString(COLLUMN_DATETIME), 
+						result.getString(COLLUMN_PURCHASELINK));
+			}
+
+		} catch (SQLException e) {
+			System.out.println("queryMovie triggered");
+			e.printStackTrace();
+			return null;
+		}
+		
+		return showtime;
+	}
+	
+	public static List<Showtime> queryByMovieIDAndTheaterID(String movieID, int theaterID) {
+		List<Showtime> showtimes = new ArrayList<>();
+		
+		try {
+			conn = DriverManager.getConnection(CONNECTION_STRING);
+			statement = conn.createStatement();
+			
+			StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_SHOWTIMES);
+			query.append(" WHERE " + COLLUMN_MOVIEID + " IS " + "'" + movieID + "'" + " AND ");
+			query.append(COLLUMN_THEATERID + " IS " + theaterID);
+			
+			System.out.println(query.toString());
+			
+			ResultSet results = statement.executeQuery(query.toString());
+			while (results.next()) {
+				Showtime showtime = new Showtime(results.getInt(COLLUMN_SHOWTIMEID), 
+						results.getInt(COLLUMN_THEATERID), 
+						results.getString(COLLUMN_MOVIEID), 
+						results.getString(COLLUMN_DATETIME), 
+						results.getString(COLLUMN_PURCHASELINK));
+
+				showtimes.add(showtime);
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("queryMovie triggered");
+			e.printStackTrace();
+			return null;
+		}
+		
+		return showtimes;
+	}
 }

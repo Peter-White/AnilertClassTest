@@ -145,7 +145,7 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 		  return false;
 	}
 	
-	public Movie JSONObjectToMovie(JSONObject movieJSON) {
+	private Movie JSONObjectToMovie(JSONObject movieJSON) {
 		Movie movie = null;
 		
 		try {
@@ -193,7 +193,7 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 		return animeQuery;
 	}
 	
-	public static int runtimeConvert(String runTime) {
+	public int runtimeConvert(String runTime) {
 		Pattern regExPattern = Pattern.compile("PT(\\d*)H(\\d*)M");
 		Matcher matcher = regExPattern.matcher("PT01H40M");
 		

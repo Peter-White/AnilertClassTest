@@ -17,8 +17,10 @@ import java.util.regex.Pattern;
 import org.json.JSONException;
 import org.json.JSONObject;
 import weeb.DBQuery.MovieQuery;
+import weeb.DBQuery.ShowtimeQuery;
 import weeb.DBQuery.TheaterQuery;
 import weeb.JSONQuery.MovieJSONQuery;
+import weeb.JSONQuery.ShowtimeJSONQuery;
 import weeb.JSONQuery.TheaterJSONQuery;
 import weeb.data.Movie;
 import weeb.data.Showtime;
@@ -26,11 +28,9 @@ import weeb.data.Theater;
 
 public class Main {
 	
-	private static Scanner scanner = new Scanner(System.in);
-	
 	public static Map<String, Theater> theatersINDB = TheaterQuery.queryAllTheaters();
 	public static Map<String, Movie> moviesINDB = MovieQuery.queryAllMovies();
-//	public static ArrayList<Showtime> showtimesINDB =
+	public static List<Showtime> showtimesINDB = ShowtimeQuery.queryAllShowtimes();
 	
 	public static void main(String[] args) {
 		
@@ -51,13 +51,15 @@ public class Main {
 			
 			Map<String, Movie> animes = new MovieJSONQuery().queryAnimeJSONByInput(userLatitude, userLongitude, userChosenRadius);
 			
-			animes.forEach((key, value) -> System.out.println(value.getTitle()));
+			animes.forEach((key, value) -> {
+				System.out.println(key);
+			});
 			
 		} catch (JSONException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
+
 	}
 
 }
