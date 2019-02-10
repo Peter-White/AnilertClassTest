@@ -61,11 +61,11 @@ public class Movie {
 		this.runtime = runtime;
 	}
 
-	public String getRatingID() {
+	public String getRating() {
 		return rating;
 	}
 
-	public void setRatingID(String rating) {
+	public void setRating(String rating) {
 		this.rating = rating;
 	}
 

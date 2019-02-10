@@ -139,8 +139,8 @@ public class MovieQuery {
 				insertCommand.append(" VALUES (");
 				insertCommand.append("\"" + movie.getTitle().replaceAll("\"", "'") + "\"");
 				insertCommand.append("," + movie.getDescription());
-				insertCommand.append(movie.getRatingID());
-				insertCommand.append(movie.getOfficialLink());
+				insertCommand.append("," + movie.getRating());
+				insertCommand.append("," + movie.getOfficialLink());
 				insertCommand.append(")");
 				
 				statement.execute(insertCommand.toString());

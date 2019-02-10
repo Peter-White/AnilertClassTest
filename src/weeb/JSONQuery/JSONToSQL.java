@@ -87,9 +87,9 @@ public class JSONToSQL {
 			if(movieJSON.has("ratings")) {
 				JSONArray ratings = movieJSON.getJSONArray("ratings");
 				JSONObject rating = (JSONObject) ratings.get(0);
-				movie.setRatingID(rating.getString("code"));
+				movie.setRating(rating.getString("code"));
 			} else {
-				movie.setRatingID("NR");
+				movie.setRating("NR");
 			}
 			
 			if(movieJSON.has("officialUrl")) {

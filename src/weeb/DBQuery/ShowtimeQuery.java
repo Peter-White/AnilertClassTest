@@ -5,12 +5,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-
-import weeb.data.Movie;
 import weeb.data.Showtime;
 
 public class ShowtimeQuery {
@@ -89,6 +85,38 @@ public class ShowtimeQuery {
 		return showtime;
 	}
 	
+	public static Showtime queryShowtime(int theaterID, String movieID, String dateTime) {
+		Showtime showtime = null;
+		
+		try {
+			conn = DriverManager.getConnection(CONNECTION_STRING);
+			statement = conn.createStatement();
+			
+			StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_SHOWTIMES);
+			query.append(" WHERE " + COLLUMN_THEATERID + " IS " + theaterID + " AND ");
+			query.append(COLLUMN_MOVIEID + " IS " + movieID + " AND ");
+			query.append(COLLUMN_DATETIME + " IS " + dateTime);
+			
+			ResultSet result = statement.executeQuery(query.toString());
+			
+			while (result.next()) {
+
+				showtime = new Showtime(result.getInt(COLLUMN_SHOWTIMEID), 
+						result.getInt(COLLUMN_THEATERID), 
+						result.getString(COLLUMN_MOVIEID), 
+						result.getString(COLLUMN_DATETIME), 
+						result.getString(COLLUMN_PURCHASELINK));
+			}
+
+		} catch (SQLException e) {
+			System.out.println("queryMovie triggered");
+			e.printStackTrace();
+			return null;
+		}
+		
+		return showtime;
+	}
+	
 	public static Set<Showtime> queryByMovieIDAndTheaterID(String movieID, int theaterID) {
 		Set<Showtime> showtimes = new HashSet<>();
 		
@@ -120,5 +148,36 @@ public class ShowtimeQuery {
 		}
 		
 		return showtimes;
+	}
+	
+	public static Showtime addShowtimeToDb(Showtime showtime) {
+		
+		try {
+			if(queryShowtime(showtime.getTheaterID(), showtime.getMovieID(), showtime.getDateTime()) == null) {
+				conn = DriverManager.getConnection(CONNECTION_STRING);
+				statement = conn.createStatement();
+				
+				StringBuilder insertCommand = new StringBuilder("INSERT INTO " + TABLE_SHOWTIMES);
+				insertCommand.append("(" + COLLUMN_THEATERID + "," + COLLUMN_MOVIEID + "," + COLLUMN_DATETIME + "," + COLLUMN_PURCHASELINK + ")");
+				insertCommand.append(" VALUES (");
+				insertCommand.append(showtime.getTheaterID());
+				insertCommand.append("," + "\"" + showtime.getMovieID() + "\"");
+				insertCommand.append("," + "\"" + showtime.getDateTime() + "\"");
+				insertCommand.append("," + "\"" + showtime.getPurchaseLink() + "\"");
+				insertCommand.append(")");
+				
+				statement.execute(insertCommand.toString());
+				showtime = queryShowtime(showtime.getTheaterID(), showtime.getMovieID(), showtime.getDateTime());
+				showtimesInDb.add(showtime);
+			} else {
+				showtime = queryShowtime(showtime.getTheaterID(), showtime.getMovieID(), showtime.getDateTime());
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			showtime = null;
+		}
+			
+		return showtime;
 	}
 }
