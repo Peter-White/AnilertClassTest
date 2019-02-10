@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import weeb.data.Movie;
 import weeb.data.Showtime;
@@ -26,8 +28,8 @@ public class ShowtimeQuery {
 	public static Connection conn;
 	public static Statement statement;
 	
-	public static List<Showtime> queryAllShowtimes() {
-		List<Showtime> showtimes = new ArrayList<>();
+	public static Set<Showtime> queryAllShowtimes() {
+		Set<Showtime> showtimes = new HashSet<>();
 		
 		try {
 			conn = DriverManager.getConnection(CONNECTION_STRING);
@@ -81,8 +83,8 @@ public class ShowtimeQuery {
 		return showtime;
 	}
 	
-	public static List<Showtime> queryByMovieIDAndTheaterID(String movieID, int theaterID) {
-		List<Showtime> showtimes = new ArrayList<>();
+	public static Set<Showtime> queryByMovieIDAndTheaterID(String movieID, int theaterID) {
+		Set<Showtime> showtimes = new HashSet<>();
 		
 		try {
 			conn = DriverManager.getConnection(CONNECTION_STRING);

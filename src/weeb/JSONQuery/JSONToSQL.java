@@ -19,26 +19,46 @@ import weeb.data.Theater;
 
 public class JSONToSQL {
 	
+	private static Map<String, Movie> moviesInDb = MovieQuery.queryAllMovies();
+	private static Map<String, Theater> theatersInDb = TheaterQuery.queryAllTheaters();
+	
+	
+	// This function triggers the update of the movie, theater, and showtime tables due to the design of the movie API
 	public void updateMovieTableByUserInput(double lat, double lng, double rad) {
 		
 		Coordinates coordinates = new Coordinates(lat, lng, rad);
 		
 		try {
-			Map<String, JSONObject> animes = new MovieJSONQuery().queryAnimeJSONByInput(lat, lng, radius);
-			animes.forEach((key, value) -> {
+			Map<String, JSONObject> movies = new MovieJSONQuery().queryAnimeJSONByInput(
+					coordinates.getLatitude(), 
+					coordinates.getLongitude(), 
+					coordinates.getRadius());
+			movies.forEach((key, value) -> {
 				
 			});
 		} catch (IOException | JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
+	// This function triggers the update of the movie, and showtime tables due to the design of the movie API
 	public void updateMovieTableBySingleTheater(Double lat, Double lng) {
 		Coordinates coordinates = new Coordinates(lat, lng, 0.05);
+		
+		try {
+			Map<String, JSONObject> movies = new MovieJSONQuery().queryAnimeJSONByInput(
+					coordinates.getLatitude(), 
+					coordinates.getLongitude(), 
+					coordinates.getRadius());
+			movies.forEach((key, value) -> {
+				
+			});
+		} catch (IOException | JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public void updateShowTable() {
+	public void updateShowtimeTable() {
 		
 	}
 	
@@ -100,14 +120,26 @@ public class JSONToSQL {
 	}
 	
 	class Coordinates {
-		double latitude;
-		double longitude;
-		double radius;
+		private double latitude;
+		private double longitude;
+		private double radius;
 		
 		public Coordinates(double lat, double lng, double rad) {
 			this.latitude = lat;
 			this.longitude = lng;
 			this.radius = rad;
+		}
+
+		public double getLatitude() {
+			return latitude;
+		}
+
+		public double getLongitude() {
+			return longitude;
+		}
+
+		public double getRadius() {
+			return radius;
 		}
 	}
 }
