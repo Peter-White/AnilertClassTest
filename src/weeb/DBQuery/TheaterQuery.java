@@ -29,6 +29,12 @@ public class TheaterQuery {
 	public static Connection conn;
 	public static Statement statement;
 	
+	private static Map<String, Theater> theatersInDb = TheaterQuery.queryAllTheaters();
+	
+	public static Map<String, Theater> getTheatersInDb() {
+		return theatersInDb;
+	}
+
 	public static Theater queryTheater(String name, String address) {
 		
 		Theater theater = null;
@@ -176,9 +182,7 @@ public class TheaterQuery {
 	public static Theater addTheaterToDB(Theater theater) {
 		
 		try {
-			theater = queryTheater(theater.getTheaterId());
-			if(theater == null) {
-				
+			if(!theatersInDb.containsKey(theater.getAddress())) {
 				conn = DriverManager.getConnection(CONNECTION_STRING);
 				statement = conn.createStatement();
 				
@@ -198,10 +202,15 @@ public class TheaterQuery {
 				addStatement.append("'" + theater.getPlace_id()  + "'" + ")");
 				
 				statement.execute(addStatement.toString());
+				theater = queryTheater(theater.getName(), theater.getAddress());
+				theatersInDb.put(theater.getAddress(), theater);
+			} else {
+				theater = theatersInDb.get(theater.getAddress());
 			}
 					
 		} catch (SQLException e) {
 			e.printStackTrace();
+			theater = null;
 		}
 
 		return theater;

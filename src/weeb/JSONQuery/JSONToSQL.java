@@ -3,6 +3,7 @@ package weeb.JSONQuery;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,10 +20,6 @@ import weeb.data.Theater;
 
 public class JSONToSQL {
 	
-	private static Map<String, Movie> moviesInDb = MovieQuery.queryAllMovies();
-	private static Map<String, Theater> theatersInDb = TheaterQuery.queryAllTheaters();
-	
-	
 	// This function triggers the update of the movie, theater, and showtime tables due to the design of the movie API
 	public void updateMovieTableByUserInput(double lat, double lng, double rad) {
 		
@@ -34,6 +31,8 @@ public class JSONToSQL {
 					coordinates.getLongitude(), 
 					coordinates.getRadius());
 			movies.forEach((key, value) -> {
+				
+				
 				
 			});
 		} catch (IOException | JSONException e) {

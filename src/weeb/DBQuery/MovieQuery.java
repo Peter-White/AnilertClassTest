@@ -30,6 +30,12 @@ public class MovieQuery {
 	private static final String COLLUMN_RATING = "rating";
 	private static final String COLLUMN_OFFICIALSITE = "officialSite";
 	
+	private static Map<String, Movie> moviesInDb = MovieQuery.queryAllMovies();
+	
+	public static Map<String, Movie> getMoviesInDb() {
+		return moviesInDb;
+	}
+
 	public static Connection conn;
 	public static Statement statement;
 	
@@ -124,7 +130,10 @@ public class MovieQuery {
 	public static Movie addMovieToDb(Movie movie) {
 		
 		try {
-			if(queryMovie(movie.getTitle()) == null) {
+			if(!moviesInDb.containsKey(movie.getTitle())) {
+				conn = DriverManager.getConnection(CONNECTION_STRING);
+				statement = conn.createStatement();
+				
 				StringBuilder insertCommand = new StringBuilder("INSERT INTO " + TABLE_MOVIES);
 				insertCommand.append("(" + COLLUMN_TITLE + "," + COLLUMN_DESCRIPTION + "," + COLLUMN_RUNTIME + "," + COLLUMN_RATING + "," + COLLUMN_OFFICIALSITE + ")");
 				insertCommand.append(" VALUES (");
@@ -134,14 +143,16 @@ public class MovieQuery {
 				insertCommand.append(movie.getOfficialLink());
 				insertCommand.append(")");
 				
-				System.out.println(insertCommand.toString());
-				
 				statement.execute(insertCommand.toString());
 				movie = queryMovie(movie.getTitle());
+				moviesInDb.put(movie.getTitle(), movie);
+			} else {
+				movie = moviesInDb.get(movie.getTitle());
 			}
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			movie = null;
 		}
 		
 		return movie;

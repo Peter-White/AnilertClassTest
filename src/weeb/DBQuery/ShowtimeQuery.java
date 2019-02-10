@@ -28,6 +28,12 @@ public class ShowtimeQuery {
 	public static Connection conn;
 	public static Statement statement;
 	
+	private static Set<Showtime> showtimesInDb = ShowtimeQuery.queryAllShowtimes();
+	
+	public static Set<Showtime> getShowtimesInDb() {
+		return showtimesInDb;
+	}
+
 	public static Set<Showtime> queryAllShowtimes() {
 		Set<Showtime> showtimes = new HashSet<>();
 		

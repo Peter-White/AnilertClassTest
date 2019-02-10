@@ -28,10 +28,6 @@ import weeb.data.Theater;
 
 public class Main {
 	
-	public static Map<String, Theater> theatersINDB = TheaterQuery.queryAllTheaters();
-	public static Map<String, Movie> moviesINDB = MovieQuery.queryAllMovies();
-	public static List<Showtime> showtimesINDB = ShowtimeQuery.queryAllShowtimes();
-	
 	public static void main(String[] args) {
 		
 		
