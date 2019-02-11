@@ -204,6 +204,7 @@ public class TheaterQuery {
 				statement.execute(addStatement.toString());
 				theater = queryTheater(theater.getName(), theater.getAddress());
 				theatersInDb.put(theater.getAddress(), theater);
+				System.out.println(theater.getName() + " added");
 			} else {
 				theater = theatersInDb.get(theater.getAddress());
 			}

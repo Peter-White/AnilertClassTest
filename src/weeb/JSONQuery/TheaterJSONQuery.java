@@ -23,7 +23,7 @@ public class TheaterJSONQuery {
 	private final String googlePlacesSearch = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=";
 	private final String googlePlaceID = "https://maps.googleapis.com/maps/api/place/details/json?placeid=";
 
-	public JSONObject queryTheaterJSON(String name, Double lat, Double lng, int radius) {
+	public JSONObject queryTheaterJSON(String name, Double lat, Double lng, double radius) {
 
 		String theaterPlaceId = null;
 		String nameConverted = name.replaceAll(" ", "%20");

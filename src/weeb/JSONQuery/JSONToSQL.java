@@ -30,20 +30,22 @@ public class JSONToSQL {
 				coordinates.getLatitude(), 
 				coordinates.getLongitude(), 
 				coordinates.getRadius());
+		
 		movies.forEach((key, value) -> {
 			
-//			try {
-//				JSONArray showtimes =  value.getJSONArray("showtimes");
-//				
-//			} catch (JSONException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-			
-			if(moviesJSON.isAnime(value)) {
-				System.out.println(key);
+			try {
+				JSONArray showtimes =  value.getJSONArray("showtimes");
+				updateShowtimeTable(showtimes, coordinates);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+			
+//			if(moviesJSON.isAnime(value)) {
+//				System.out.println(key);
+//			}
 		});
+		
 	}
 	
 	// This function triggers the update of the movie, and showtime tables due to the design of the movie API
@@ -60,14 +62,47 @@ public class JSONToSQL {
 
 	}
 	
-	public void updateShowtimeTable(JSONArray showtimesArray) {
+	public void updateShowtimeTable(JSONArray showtimesArray, Coordinates coordinates) {
 		
-		
+		if(showtimesArray.length() > 0) {
+			for (int i = 0; i < showtimesArray.length(); i++) {
+				try {
+					JSONObject showtimeObject = showtimesArray.getJSONObject(i);
+					JSONObject theaterObject = showtimeObject.getJSONObject("theatre");
+					Theater theater = updateTheaterTable(theaterObject, coordinates);
+					System.out.println(theater.getAddress());
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 		
 	}
 	
-	public void updateTheaterTable() {
+	public Theater updateTheaterTable(JSONObject theaterObject, Coordinates coordinates) {
 		
+		Theater theater = null;
+		
+		try {
+			theater = TheaterQuery.queryTheater(theaterObject.getInt("id"));
+			
+			if(theater == null) {
+				
+					TheaterJSONQuery theaterJSONQuery = new TheaterJSONQuery();
+					JSONObject googleResult = theaterJSONQuery.queryTheaterJSON(theaterObject.getString("name"), 
+																				coordinates.getLatitude(), 
+																				coordinates.getLongitude(), 
+																				coordinates.getRadius());
+					theater = JSONObjectToTheater(theaterObject.getInt("id"), googleResult);
+					theater = TheaterQuery.addTheaterToDB(theater);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return theater;
 	}
 	
 	private Movie JSONObjectToMovie(JSONObject movieJSON) {
@@ -133,10 +168,10 @@ public class JSONToSQL {
 			theater = new Theater();
 			theater.setTheaterId(id);
 			theater.setName(placeByID.getString("name"));
-			theater.setAddress("formatted_address");
+			theater.setAddress(placeByID.getString("formatted_address"));
 			theater.setLatitude(placeByID.getJSONObject("geometry").getJSONObject("location").getDouble("lat"));
 			theater.setLongitude(placeByID.getJSONObject("geometry").getJSONObject("location").getDouble("lng"));
-			theater.setPlace_id("place_id");
+			theater.setPlace_id(placeByID.getString("place_id"));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

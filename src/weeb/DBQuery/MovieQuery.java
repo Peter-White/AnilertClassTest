@@ -18,10 +18,10 @@ import weeb.data.Movie;
 import weeb.data.Theater;
 
 public class MovieQuery {
-	
+
 	private static final String DB_NAME = "Anilert.db";
 	private static final String CONNECTION_STRING = "jdbc:sqlite:/home/leafcoder/SQL/" + DB_NAME;
-	
+
 	private static final String TABLE_MOVIES = "Movies";
 	private static final String COLLUMN_MOVIEID = "movieId";
 	private static final String COLLUMN_TITLE = "title";
@@ -29,63 +29,58 @@ public class MovieQuery {
 	private static final String COLLUMN_RUNTIME = "runtime";
 	private static final String COLLUMN_RATING = "rating";
 	private static final String COLLUMN_OFFICIALSITE = "officialSite";
-	
-	// All movies that pass through the anime filter are stored and filtered as anime
+
+	// All movies that pass through the anime filter are stored and filtered as
+	// anime
 	private static Map<String, Movie> animeInDb = MovieQuery.queryAllAnime();
-	
+
 	public static Map<String, Movie> getAnimeInDb() {
 		return animeInDb;
 	}
 
 	public static Connection conn;
 	public static Statement statement;
-	
+
 	public static Map<String, Movie> queryAllAnime() {
 		Map<String, Movie> movieQuery = new HashMap<String, Movie>();
-		
+
 		try {
 			conn = DriverManager.getConnection(CONNECTION_STRING);
 			statement = conn.createStatement();
-			
+
 			ResultSet results = statement.executeQuery("SELECT * FROM " + TABLE_MOVIES);
 			while (results.next()) {
-				Movie movie = new Movie(results.getString(COLLUMN_MOVIEID), 
-										results.getString(COLLUMN_TITLE), 
-										results.getString(COLLUMN_DESCRIPTION), 
-										results.getInt(COLLUMN_RUNTIME), 
-										results.getString(COLLUMN_RATING), 
-										results.getString(COLLUMN_OFFICIALSITE));
-				
+				Movie movie = new Movie(results.getString(COLLUMN_MOVIEID), results.getString(COLLUMN_TITLE),
+						results.getString(COLLUMN_DESCRIPTION), results.getInt(COLLUMN_RUNTIME),
+						results.getString(COLLUMN_RATING), results.getString(COLLUMN_OFFICIALSITE));
+
 				movieQuery.put(results.getString(COLLUMN_TITLE), movie);
 			}
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return movieQuery;
 	}
-	
+
 	public static Movie queryAnime(int movieId) {
 		Movie movie = null;
-		
+
 		try {
 			conn = DriverManager.getConnection(CONNECTION_STRING);
 			statement = conn.createStatement();
-			
+
 			StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_MOVIES);
 			query.append(" WHERE " + COLLUMN_MOVIEID + " IS " + "\"" + movieId + "\"");
-			
+
 			ResultSet result = statement.executeQuery(query.toString());
-			
+
 			while (result.next()) {
 
-				movie = new Movie(result.getString(COLLUMN_MOVIEID), 
-						result.getString(COLLUMN_TITLE), 
-						result.getString(COLLUMN_DESCRIPTION), 
-						result.getInt(COLLUMN_RUNTIME), 
-						result.getString(COLLUMN_RATING), 
-						result.getString(COLLUMN_OFFICIALSITE));
+				movie = new Movie(result.getString(COLLUMN_MOVIEID), result.getString(COLLUMN_TITLE),
+						result.getString(COLLUMN_DESCRIPTION), result.getInt(COLLUMN_RUNTIME),
+						result.getString(COLLUMN_RATING), result.getString(COLLUMN_OFFICIALSITE));
 			}
 
 		} catch (SQLException e) {
@@ -93,97 +88,95 @@ public class MovieQuery {
 			e.printStackTrace();
 			return null;
 		}
-		
+
 		return movie;
 	}
-	
+
 	public static Movie queryAnime(String title) {
 		Movie movie = null;
-		
+
 		try {
 			conn = DriverManager.getConnection(CONNECTION_STRING);
 			statement = conn.createStatement();
-			
+
 			StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_MOVIES);
 			query.append(" WHERE " + COLLUMN_TITLE + " IS " + "\"" + title + "\"");
-			
+
 			ResultSet result = statement.executeQuery(query.toString());
-			
+
 			while (result.next()) {
 
-				movie = new Movie(result.getString(COLLUMN_MOVIEID), 
-						result.getString(COLLUMN_TITLE), 
-						result.getString(COLLUMN_DESCRIPTION), 
-						result.getInt(COLLUMN_RUNTIME), 
-						result.getString(COLLUMN_RATING), 
-						result.getString(COLLUMN_OFFICIALSITE));
+				movie = new Movie(result.getString(COLLUMN_MOVIEID), result.getString(COLLUMN_TITLE),
+						result.getString(COLLUMN_DESCRIPTION), result.getInt(COLLUMN_RUNTIME),
+						result.getString(COLLUMN_RATING), result.getString(COLLUMN_OFFICIALSITE));
 			}
-			
+
 		} catch (SQLException e) {
 			System.out.println("queryMovie triggered");
 			e.printStackTrace();
 			return null;
 		}
-		
+
 		return movie;
 	}
-	
+
 	public static Movie addAnimeToDb(Movie movie) {
-		
+
 		try {
-			if(!animeInDb.containsKey(movie.getTitle())) {
+			if (!animeInDb.containsKey(movie.getTitle())) {
 				conn = DriverManager.getConnection(CONNECTION_STRING);
 				statement = conn.createStatement();
-				
+
 				StringBuilder insertCommand = new StringBuilder("INSERT INTO " + TABLE_MOVIES);
-				insertCommand.append("(" + COLLUMN_TITLE + "," + COLLUMN_DESCRIPTION + "," + COLLUMN_RUNTIME + "," + COLLUMN_RATING + "," + COLLUMN_OFFICIALSITE + ")");
+				insertCommand.append("(" + COLLUMN_TITLE + "," + COLLUMN_DESCRIPTION + "," + COLLUMN_RUNTIME + ","
+						+ COLLUMN_RATING + "," + COLLUMN_OFFICIALSITE + ")");
 				insertCommand.append(" VALUES (");
 				insertCommand.append("\"" + movie.getTitle().replaceAll("\"", "'") + "\"");
 				insertCommand.append("," + movie.getDescription());
 				insertCommand.append("," + movie.getRating());
 				insertCommand.append("," + movie.getOfficialLink());
 				insertCommand.append(")");
-				
+
 				statement.execute(insertCommand.toString());
 				movie = queryAnime(movie.getTitle());
 				animeInDb.put(movie.getTitle(), movie);
 			} else {
 				movie = animeInDb.get(movie.getTitle());
 			}
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			movie = null;
 		}
-		
+
 		return movie;
 	}
-	
+
 	public static int runtimeConvert(String runTime) {
 		Pattern regExPattern = Pattern.compile("PT(\\d*)H(\\d*)M");
 		Matcher matcher = regExPattern.matcher("PT01H40M");
-		
+
 		int minutes = 0;
 		while (matcher.find()) {
 			minutes += Integer.parseInt(matcher.group(2));
 			minutes += Integer.parseInt(matcher.group(1)) * 60;
 		}
-		
+
 		return minutes;
 	}
-	
+
 	public static String runtimeConvert(int runtime) {
 		int hours = 0;
-		while(runtime >= 60) {
+		while (runtime >= 60) {
 			runtime %= 60;
 			hours++;
 		}
-		
+
 		String runTimeConverted = (hours == 1) ? hours + " hour" : hours + " hours";
 		if (runtime != 0) {
 			runTimeConverted += (runtime == 1) ? runtime + " minute" : runtime + " minutes";
 		}
-		
+
 		return runTimeConverted;
 	}
 }
