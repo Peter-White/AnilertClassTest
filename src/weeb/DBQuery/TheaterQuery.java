@@ -194,12 +194,12 @@ public class TheaterQuery {
 				addStatement.append(COLLUMN_LONGITUDE + ",");
 				addStatement.append(COLLUMN_PLACE_ID + ") ");
 				addStatement.append("VALUES (");
-				addStatement.append("'" + theater.getTheaterId() + "'" + ",");
-				addStatement.append("'" + theater.getName() + "'" + ",");
+				addStatement.append(theater.getTheaterId() + ",");
+				addStatement.append("\"" + theater.getName() + "\"" + ",");
 				addStatement.append("'" + theater.getAddress() + "'" + ",");
-				addStatement.append("'" + theater.getLatitude() + "'" + ",");
-				addStatement.append("'" + theater.getLongitude() + "'" + ",");
-				addStatement.append("'" + theater.getPlace_id()  + "'" + ")");
+				addStatement.append(theater.getLatitude() + ",");
+				addStatement.append(theater.getLongitude() + ",");
+				addStatement.append("\"" + theater.getPlace_id()  + "\"" + ")");
 				
 				statement.execute(addStatement.toString());
 				theater = queryTheater(theater.getName(), theater.getAddress());
