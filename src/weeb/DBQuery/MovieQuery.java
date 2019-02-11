@@ -30,16 +30,17 @@ public class MovieQuery {
 	private static final String COLLUMN_RATING = "rating";
 	private static final String COLLUMN_OFFICIALSITE = "officialSite";
 	
-	private static Map<String, Movie> moviesInDb = MovieQuery.queryAllMovies();
+	// All movies that pass through the anime filter are stored and filtered as anime
+	private static Map<String, Movie> animeInDb = MovieQuery.queryAllAnime();
 	
-	public static Map<String, Movie> getMoviesInDb() {
-		return moviesInDb;
+	public static Map<String, Movie> getAnimeInDb() {
+		return animeInDb;
 	}
 
 	public static Connection conn;
 	public static Statement statement;
 	
-	public static Map<String, Movie> queryAllMovies() {
+	public static Map<String, Movie> queryAllAnime() {
 		Map<String, Movie> movieQuery = new HashMap<String, Movie>();
 		
 		try {
@@ -65,7 +66,7 @@ public class MovieQuery {
 		return movieQuery;
 	}
 	
-	public static Movie queryMovie(int movieId) {
+	public static Movie queryAnime(int movieId) {
 		Movie movie = null;
 		
 		try {
@@ -96,7 +97,7 @@ public class MovieQuery {
 		return movie;
 	}
 	
-	public static Movie queryMovie(String title) {
+	public static Movie queryAnime(String title) {
 		Movie movie = null;
 		
 		try {
@@ -127,10 +128,10 @@ public class MovieQuery {
 		return movie;
 	}
 	
-	public static Movie addMovieToDb(Movie movie) {
+	public static Movie addAnimeToDb(Movie movie) {
 		
 		try {
-			if(!moviesInDb.containsKey(movie.getTitle())) {
+			if(!animeInDb.containsKey(movie.getTitle())) {
 				conn = DriverManager.getConnection(CONNECTION_STRING);
 				statement = conn.createStatement();
 				
@@ -144,10 +145,10 @@ public class MovieQuery {
 				insertCommand.append(")");
 				
 				statement.execute(insertCommand.toString());
-				movie = queryMovie(movie.getTitle());
-				moviesInDb.put(movie.getTitle(), movie);
+				movie = queryAnime(movie.getTitle());
+				animeInDb.put(movie.getTitle(), movie);
 			} else {
-				movie = moviesInDb.get(movie.getTitle());
+				movie = animeInDb.get(movie.getTitle());
 			}
 			
 		} catch (SQLException e) {

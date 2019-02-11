@@ -24,40 +24,45 @@ public class JSONToSQL {
 	public void updateMovieTableByUserInput(double lat, double lng, double rad) {
 		
 		Coordinates coordinates = new Coordinates(lat, lng, rad);
+		MovieJSONQuery moviesJSON = new MovieJSONQuery();
 		
-		try {
-			Map<String, JSONObject> movies = new MovieJSONQuery().queryAnimeJSONByInput(
-					coordinates.getLatitude(), 
-					coordinates.getLongitude(), 
-					coordinates.getRadius());
-			movies.forEach((key, value) -> {
-				
-				
-				
-			});
-		} catch (IOException | JSONException e) {
-			e.printStackTrace();
-		}
+		Map<String, JSONObject> movies = moviesJSON.queryMovieJSONByInput(
+				coordinates.getLatitude(), 
+				coordinates.getLongitude(), 
+				coordinates.getRadius());
+		movies.forEach((key, value) -> {
+			
+//			try {
+//				JSONArray showtimes =  value.getJSONArray("showtimes");
+//				
+//			} catch (JSONException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+			
+			if(moviesJSON.isAnime(value)) {
+				System.out.println(key);
+			}
+		});
 	}
 	
 	// This function triggers the update of the movie, and showtime tables due to the design of the movie API
 	public void updateMovieTableBySingleTheater(Double lat, Double lng) {
 		Coordinates coordinates = new Coordinates(lat, lng, 0.05);
 		
-		try {
-			Map<String, JSONObject> movies = new MovieJSONQuery().queryAnimeJSONByInput(
-					coordinates.getLatitude(), 
-					coordinates.getLongitude(), 
-					coordinates.getRadius());
-			movies.forEach((key, value) -> {
-				
-			});
-		} catch (IOException | JSONException e) {
-			e.printStackTrace();
-		}
+		Map<String, JSONObject> movies = new MovieJSONQuery().queryMovieJSONByInput(
+				coordinates.getLatitude(), 
+				coordinates.getLongitude(), 
+				coordinates.getRadius());
+		movies.forEach((key, value) -> {
+			System.out.println(key);
+		});
+
 	}
 	
-	public void updateShowtimeTable() {
+	public void updateShowtimeTable(JSONArray showtimesArray) {
+		
+		
 		
 	}
 	
@@ -103,6 +108,41 @@ public class JSONToSQL {
 		}
 		
 		return movie;
+	}
+	
+	private Showtime JSONObjectToShowtime(String movieID, JSONObject showtimeObject) {
+		Showtime showtime = null;
+		
+		try {
+			showtime = new Showtime();
+			showtime.setMovieID(movieID);
+			showtime.setDateTime(showtimeObject.getString("dateTime"));
+			showtime.setTheaterID(showtimeObject.getJSONObject("theatre").getInt("id"));
+			showtime.setPurchaseLink(showtimeObject.getString("ticketURI"));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		return showtime;
+	}
+	
+	private Theater JSONObjectToTheater(int id, JSONObject placeByID) {
+		Theater theater = null;
+		
+		try {
+			theater = new Theater();
+			theater.setTheaterId(id);
+			theater.setName(placeByID.getString("name"));
+			theater.setAddress("formatted_address");
+			theater.setLatitude(placeByID.getJSONObject("geometry").getJSONObject("location").getDouble("lat"));
+			theater.setLongitude(placeByID.getJSONObject("geometry").getJSONObject("location").getDouble("lng"));
+			theater.setPlace_id("place_id");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return theater;
 	}
 	
 	public int runtimeConvert(String runTime) {

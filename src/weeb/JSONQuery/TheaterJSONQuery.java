@@ -22,52 +22,8 @@ public class TheaterJSONQuery {
 	private StringBuilder urlPath;
 	private final String googlePlacesSearch = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=";
 	private final String googlePlaceID = "https://maps.googleapis.com/maps/api/place/details/json?placeid=";
-	private Map<Integer, Theater> theaterAddresses;
-	
-	public TheaterJSONQuery() {
-		theaterAddresses = new HashMap<>();
-	}
 
-	public void addTheatersJSON(JSONObject movie, double lat, double lng, int radius) {
-		try {
-			JSONArray showtimes = movie.getJSONArray("showtimes");
-			for (int i = 0; i < showtimes.length(); i++) {
-				JSONObject theater = showtimes.getJSONObject(i).getJSONObject("theatre");
-				if (!theaterAddresses.containsKey(theater.getInt("id"))) {
-					String placeId = queryTheaterPlaceIds(theater.getString("name"), lat, lng, radius);
-					int id = theater.getInt("id");
-					if(placeId != null) {
-						theaterAddresses.put(theater.getInt("id"), JSONObjectToTheater(id, getTheaterJSON(placeId)));
-					}
-				}
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		
-	}
-
-	private JSONObject getTheaterJSON(String placeId) {
-
-		JSONObject theaterJSON = null;
-
-		urlPath = new StringBuilder(googlePlaceID);
-		urlPath.append(placeId);
-		urlPath.append("&fields=address_component,adr_address,alt_id,formatted_address,geometry,"
-				+ "icon,id,name,permanently_closed,photo,place_id,plus_code,scope,type,url,utc_offset,vicinity");
-		urlPath.append("&key=");
-		urlPath.append(APIKeys.getGooglePlacesAPIKey());
-
-		try {
-			theaterJSON = new JSONObjectReader().readJsonObjectFromUrl(urlPath.toString()).getJSONObject("result");
-		} catch (IOException | JSONException e) {
-			e.printStackTrace();
-		}
-
-		return theaterJSON;
-	}
-
-	private String queryTheaterPlaceIds(String name, Double lat, Double lng, int radius) {
+	public JSONObject queryTheaterJSON(String name, Double lat, Double lng, int radius) {
 
 		String theaterPlaceId = null;
 		String nameConverted = name.replaceAll(" ", "%20");
@@ -106,8 +62,30 @@ public class TheaterJSONQuery {
 			e.printStackTrace();
 		}
 		
-		return theaterPlaceId;
+		return getTheaterJSON(theaterPlaceId);
 	}
+	
+	private JSONObject getTheaterJSON(String placeId) {
+
+		JSONObject theaterJSON = null;
+
+		urlPath = new StringBuilder(googlePlaceID);
+		urlPath.append(placeId);
+		urlPath.append("&fields=address_component,adr_address,alt_id,formatted_address,geometry,"
+				+ "icon,id,name,permanently_closed,photo,place_id,plus_code,scope,type,url,utc_offset,vicinity");
+		urlPath.append("&key=");
+		urlPath.append(APIKeys.getGooglePlacesAPIKey());
+
+		try {
+			theaterJSON = new JSONObjectReader().readJsonObjectFromUrl(urlPath.toString()).getJSONObject("result");
+		} catch (IOException | JSONException e) {
+			e.printStackTrace();
+		}
+
+		return theaterJSON;
+	}
+
+	
 
 	public Map<String, JSONObject> userLocationSearchResults(String address) {
 
@@ -136,29 +114,6 @@ public class TheaterJSONQuery {
 		}
 
 		return results;
-	}
-	
-	private Theater JSONObjectToTheater(int id, JSONObject placeByID) {
-		Theater theater = null;
-		
-		try {
-			theater = new Theater();
-			theater.setTheaterId(id);
-			theater.setName(placeByID.getString("name"));
-			theater.setAddress("formatted_address");
-			theater.setLatitude(placeByID.getJSONObject("geometry").getJSONObject("location").getDouble("lat"));
-			theater.setLongitude(placeByID.getJSONObject("geometry").getJSONObject("location").getDouble("lng"));
-			theater.setPlace_id("place_id");
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return theater;
-	}
-
-	public Map<Integer, Theater> getTheaterMap() {
-		return theaterAddresses;
 	}
 
 }

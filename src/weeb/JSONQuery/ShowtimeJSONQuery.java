@@ -10,39 +10,21 @@ import weeb.data.Showtime;
 
 public class ShowtimeJSONQuery {
 
-	public Set<Showtime> queryShowtimesByMovieShowtimeJSONArray(String movieID, JSONArray showtimesJSONArray) {
-		Set<Showtime> showtimes = new HashSet<>();
+	public Set<JSONObject> queryShowtimesByMovieShowtimeJSONArray(String movieID, JSONArray showtimesJSONArray) {
+		Set<JSONObject> showtimes = new HashSet<>();
 		
 		try {
 			for (int i = 0; i < showtimesJSONArray.length(); i++) {
 			
 				JSONObject showtimeObject = (JSONObject) showtimesJSONArray.get(i);
-				Showtime showtime = JSONObjectToShowtime(movieID, showtimeObject);
-				showtimes.add(showtime);
+				showtimes.add(showtimeObject);
 				
 			}	
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		
-		
 		return showtimes;
-	}
-	
-	private Showtime JSONObjectToShowtime(String movieID, JSONObject showtimeObject) {
-		Showtime showtime = null;
-		
-		try {
-			showtime = new Showtime();
-			showtime.setMovieID(movieID);
-			showtime.setDateTime(showtimeObject.getString("dateTime"));
-			showtime.setTheaterID(showtimeObject.getJSONObject("theatre").getInt("id"));
-			showtime.setPurchaseLink(showtimeObject.getString("ticketURI"));
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		
-		return showtime;
 	}
 	
 }

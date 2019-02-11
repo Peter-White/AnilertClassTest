@@ -29,32 +29,39 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 		movieJSONQuery = new HashMap<String, JSONObject>();
 	}
 	
-	public Map<String, JSONObject> queryAnimeJSONByInput(double lat, double lng, double radius) throws IOException, JSONException {
+	public Map<String, JSONObject> queryMovieJSONByInput(double lat, double lng, double radius) {
+
+		JSONArray movies = null;
 		
-		urlPath = new StringBuilder();
-		urlPath.append(graceNoteURLStart);
-		urlPath.append(numDays);
-		urlPath.append("&lat=" + lat);
-		urlPath.append("&lng=" + lng);
-		urlPath.append("&radius=" + radius);
-		urlPath.append("&units=km");
-		urlPath.append("&api_key=");
-		urlPath.append(APIKeys.getGracenoteAPIKey());
-		
-		JSONArray movies = readJsonArrayFromUrl(urlPath.toString());
-		
-		int count = 0;
-		
-		while (count < movies.length()) {
+		try {
+			urlPath = new StringBuilder();
+			urlPath.append(graceNoteURLStart);
+			urlPath.append(numDays);
+			urlPath.append("&lat=" + lat);
+			urlPath.append("&lng=" + lng);
+			urlPath.append("&radius=" + radius);
+			urlPath.append("&units=km");
+			urlPath.append("&api_key=");
+			urlPath.append(APIKeys.getGracenoteAPIKey());
+			movies = readJsonArrayFromUrl(urlPath.toString());
 			
-			JSONObject currentMovie = (JSONObject) movies.get(count);
-			movieJSONQuery.put(currentMovie.getString("title"), currentMovie);
-//			theaterJSONQuery.addTheatersJSON(currentMovie, lat, lng, radius);
+			int count = 0;
 			
-//			if(isAnime(currentMovie) && !animeQuery.containsKey(currentMovie.getString("title"))) {
-//				animeQuery.put(currentMovie.getString("title"), JSONObjectToMovie(currentMovie));
-//			}
-			count++;
+			while (count < movies.length()) {
+				
+				JSONObject currentMovie = (JSONObject) movies.get(count);
+				movieJSONQuery.put(currentMovie.getString("title"), currentMovie);
+//				theaterJSONQuery.addTheatersJSON(currentMovie, lat, lng, radius);
+				
+//				if(isAnime(currentMovie) && !animeQuery.containsKey(currentMovie.getString("title"))) {
+//					animeQuery.put(currentMovie.getString("title"), JSONObjectToMovie(currentMovie));
+//				}
+				count++;
+			}
+			
+		} catch (IOException | JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return movieJSONQuery;
@@ -66,47 +73,65 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 		return df.format(date).toString();
 	}
 	
-	public boolean isAnime(JSONObject currentMovie) throws JSONException, IOException {
-		if(currentMovie.has("animation") && currentMovie.get("animation").equals("anime")) {
-			return true;
-		} else if(currentMovie.has("genres")) {
-			String genres = currentMovie.get("genres").toString();
-			if(genres.indexOf("Anime") != -1) {
+	public boolean isAnime(JSONObject currentMovie) {
+		try {
+			if(currentMovie.has("animation") && currentMovie.get("animation").equals("anime")) {
 				return true;
-			}
-		} else {
-			String description = null;
-			if(currentMovie.has("shortDescription")) {
-				description = (String) currentMovie.get("shortDescription");
-				if(description.indexOf("Anime") != -1 || description.indexOf("anime") != -1) {
-					return true;
-				}
-			} else if(currentMovie.has("longDescription")) {
-				description = (String) currentMovie.get("longDescription");
-				if(description.indexOf("Anime") != -1 || description.indexOf("anime") != -1) {
+			} else if(currentMovie.has("genres")) {
+				String genres = currentMovie.get("genres").toString();
+				if(genres.indexOf("Anime") != -1) {
 					return true;
 				}
 			} else {
-				if(movieDBCheck(currentMovie.getString("title"))) {
-					return true;
+				String description = null;
+				if(currentMovie.has("shortDescription")) {
+					description = (String) currentMovie.get("shortDescription");
+					if(description.indexOf("Anime") != -1 || description.indexOf("anime") != -1) {
+						return true;
+					}
+				} else if(currentMovie.has("longDescription")) {
+					description = (String) currentMovie.get("longDescription");
+					if(description.indexOf("Anime") != -1 || description.indexOf("anime") != -1) {
+						return true;
+					}
+				} else {
+					if(movieDBCheck(currentMovie.getString("title"))) {
+						return true;
+					}
 				}
 			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return false;
 	}
 	
-	public Boolean movieDBCheck(String title) throws JSONException, IOException {
+	public Boolean movieDBCheck(String title) {
 		
-		  title = title.replaceAll(" ", "%20");
+		  String titleConverted = title.replaceAll(" ", "%20");
 		  urlPath = new StringBuilder(movieDBStart);
 		  urlPath.append(APIKeys.getMovieDBAPIKey());
 		  urlPath.append("&language=en&query=");
-		  urlPath.append(title);
+		  urlPath.append(titleConverted);
 		  urlPath.append("&page=1&include_adult=true");
 			
-		  JSONArray results = readJsonObjectFromUrl(urlPath.toString()).getJSONArray("results");
+		  JSONArray results;
+		  
+		try {
+			results = readJsonObjectFromUrl(urlPath.toString()).getJSONArray("results");
 			
-		  for(int i = 0; i < results.length(); i++) {
+			int length = 0;
+			
+			if(title.split(" ").length > 1) {
+				length = results.length();
+			} else {
+				if(results.length() > 60) {
+					length = 60;
+				}
+			}
+			
+			for(int i = 0; i < length; i++) {
 			  JSONObject currentMovie = (JSONObject) results.get(i);
 			  if(currentMovie.has("original_language")) {
 				 String originalLanguage = currentMovie.getString("original_language"); 
@@ -116,9 +141,13 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 					  return true;
 				  }
 			  }
-		  }
-		  
-		  return false;
+		    }
+			
+		} catch (JSONException | IOException e) {
+			e.printStackTrace();
+		}
+
+		return false;
 	}
 	
 	public int runtimeConvert(String runTime) {
