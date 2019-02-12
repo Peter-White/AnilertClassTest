@@ -167,7 +167,12 @@ public class JSONToSQL {
 			showtime.setMovieID(movieID);
 			showtime.setDateTime(showtimeObject.getString("dateTime"));
 			showtime.setTheaterID(showtimeObject.getJSONObject("theatre").getInt("id"));
-			showtime.setPurchaseLink(showtimeObject.getString("ticketURI"));
+			if(showtimeObject.getString("ticketURI") != null) {
+				showtime.setPurchaseLink(showtimeObject.getString("ticketURI"));
+			} else {
+				showtime.setPurchaseLink(null);
+			}
+			
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
