@@ -44,8 +44,10 @@ public class TheaterQuery {
 			statement = conn.createStatement();
 			
 			StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_THEATERS);
-			query.append(" WHERE " + COLLUMN_NAME + " LIKE " + "'%" + name + "%' AND ");
-			query.append(COLLUMN_ADDRESS + " LIKE " + "'%" + address + "%'");
+			query.append(" WHERE " + COLLUMN_NAME + " LIKE " + "\"%" + name + "%\" AND ");
+			query.append(COLLUMN_ADDRESS + " LIKE " + "\"%" + address + "%\"");
+			
+			System.out.println(query.toString());
 			
 			ResultSet result = statement.executeQuery(query.toString());
 			

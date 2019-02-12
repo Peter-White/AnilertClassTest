@@ -128,15 +128,31 @@ public class MovieQuery {
 				statement = conn.createStatement();
 
 				StringBuilder insertCommand = new StringBuilder("INSERT INTO " + TABLE_MOVIES);
-				insertCommand.append("(" + COLLUMN_TITLE + "," + COLLUMN_DESCRIPTION + "," + COLLUMN_RUNTIME + ","
+				insertCommand.append("(" + COLLUMN_MOVIEID + "," + COLLUMN_TITLE + "," + COLLUMN_DESCRIPTION + "," + COLLUMN_RUNTIME + ","
 						+ COLLUMN_RATING + "," + COLLUMN_OFFICIALSITE + ")");
 				insertCommand.append(" VALUES (");
-				insertCommand.append("\"" + movie.getTitle().replaceAll("\"", "'") + "\"");
-				insertCommand.append("," + movie.getDescription());
-				insertCommand.append("," + movie.getRating());
-				insertCommand.append("," + movie.getOfficialLink());
+				insertCommand.append("\"" + movie.getMovieId() + "\"");
+				insertCommand.append("," + "\"" + movie.getTitle().replaceAll("\"", "'") + "\"");
+				
+				if(movie.getDescription() != null) {
+					insertCommand.append("," + "\"" + movie.getDescription() + "\"");
+				} else {
+					insertCommand.append("," + null);
+				}
+				
+				insertCommand.append("," + movie.getRuntime());
+				insertCommand.append("," + "\"" + movie.getRating() + "\"");
+				
+				if(movie.getOfficialLink() != null) {
+					insertCommand.append("," + "\"" + movie.getOfficialLink() + "\"");
+				} else {
+					insertCommand.append("," + null);
+				}
+				
 				insertCommand.append(")");
-
+				
+				System.out.println(insertCommand.toString());
+				
 				statement.execute(insertCommand.toString());
 				movie = queryAnime(movie.getTitle());
 				animeInDb.put(movie.getTitle(), movie);

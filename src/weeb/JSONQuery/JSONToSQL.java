@@ -1,6 +1,7 @@
 package weeb.JSONQuery;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +21,9 @@ import weeb.data.Theater;
 
 public class JSONToSQL {
 	
+	private Map<String, Movie> queryedMovies = new HashMap<>();
+	private Map<Integer, Theater> queryedTheater = new HashMap<>();
+	
 	// This function triggers the update of the movie, theater, and showtime tables due to the design of the movie API
 	public void updateMovieTableByUserInput(double lat, double lng, double rad) {
 		
@@ -35,15 +39,19 @@ public class JSONToSQL {
 			
 			try {
 				JSONArray showtimes =  value.getJSONArray("showtimes");
-				updateShowtimeTable(showtimes, coordinates);
+				updateTheaterTable(showtimes, coordinates);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
-//			if(moviesJSON.isAnime(value)) {
-//				System.out.println(key);
-//			}
+			if(moviesJSON.isAnime(value)) {
+				Movie anime = JSONObjectToMovie(value);
+				anime = MovieQuery.addAnimeToDb(anime);
+				queryedMovies.put(anime.getMovieId(), anime);
+				
+				updateShowtimeTable(value);
+			}
 		});
 		
 	}
@@ -62,47 +70,53 @@ public class JSONToSQL {
 
 	}
 	
-	public void updateShowtimeTable(JSONArray showtimesArray, Coordinates coordinates) {
+	public void updateShowtimeTable(JSONObject movieJSON) {
+		
+		JSONArray showtimesArray;
+		try {
+			showtimesArray = movieJSON.getJSONArray("showtimes");
+			if(showtimesArray.length() > 0) {
+			for (int i = 0; i < showtimesArray.length(); i++) {
+				JSONObject showtimeObject = showtimesArray.getJSONObject(i);
+				if(ShowtimeQuery.queryShowtime(showtimeObject.getJSONObject("theatre").getInt("id"), 
+																			movieJSON.getString("tmsId"), 
+																			showtimeObject.getString("dateTime")) == null) {
+					Showtime showtime = JSONObjectToShowtime(movieJSON.getString("tmsId"), showtimeObject);
+					showtime = ShowtimeQuery.addShowtimeToDb(showtime);
+				}
+			}
+		}
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+	
+	public void updateTheaterTable(JSONArray showtimesArray, Coordinates coordinates) {
 		
 		if(showtimesArray.length() > 0) {
 			for (int i = 0; i < showtimesArray.length(); i++) {
+				Theater theater = null;
 				try {
-					JSONObject showtimeObject = showtimesArray.getJSONObject(i);
-					JSONObject theaterObject = showtimeObject.getJSONObject("theatre");
-					Theater theater = updateTheaterTable(theaterObject, coordinates);
-					System.out.println(theater.getAddress());
+					JSONObject theaterObject = showtimesArray.getJSONObject(i).getJSONObject("theatre");
+					theater = TheaterQuery.queryTheater(theaterObject.getInt("id"));
+					if(theater == null) {
+						TheaterJSONQuery theaterJSONQuery = new TheaterJSONQuery();
+						JSONObject googleResult = theaterJSONQuery.queryTheaterJSON(theaterObject.getString("name"), 
+																					coordinates.getLatitude(), 
+																					coordinates.getLongitude(), 
+																					coordinates.getRadius());
+						theater = JSONObjectToTheater(theaterObject.getInt("id"), googleResult);
+						theater = TheaterQuery.addTheaterToDB(theater);
+					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			}
-		}
-		
-	}
-	
-	public Theater updateTheaterTable(JSONObject theaterObject, Coordinates coordinates) {
-		
-		Theater theater = null;
-		
-		try {
-			theater = TheaterQuery.queryTheater(theaterObject.getInt("id"));
-			
-			if(theater == null) {
 				
-					TheaterJSONQuery theaterJSONQuery = new TheaterJSONQuery();
-					JSONObject googleResult = theaterJSONQuery.queryTheaterJSON(theaterObject.getString("name"), 
-																				coordinates.getLatitude(), 
-																				coordinates.getLongitude(), 
-																				coordinates.getRadius());
-					theater = JSONObjectToTheater(theaterObject.getInt("id"), googleResult);
-					theater = TheaterQuery.addTheaterToDB(theater);
+				queryedTheater.put(theater.getTheaterId(), theater);
 			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-		
-		return theater;
 	}
 	
 	private Movie JSONObjectToMovie(JSONObject movieJSON) {
