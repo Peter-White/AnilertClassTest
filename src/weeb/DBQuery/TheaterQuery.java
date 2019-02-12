@@ -47,8 +47,6 @@ public class TheaterQuery {
 			query.append(" WHERE " + COLLUMN_NAME + " LIKE " + "\"%" + name + "%\" AND ");
 			query.append(COLLUMN_ADDRESS + " LIKE " + "\"%" + address + "%\"");
 			
-			System.out.println(query.toString());
-			
 			ResultSet result = statement.executeQuery(query.toString());
 			
 			while (result.next()) {

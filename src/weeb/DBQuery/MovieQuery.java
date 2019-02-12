@@ -135,7 +135,7 @@ public class MovieQuery {
 				insertCommand.append("," + "\"" + movie.getTitle().replaceAll("\"", "'") + "\"");
 				
 				if(movie.getDescription() != null) {
-					insertCommand.append("," + "\"" + movie.getDescription() + "\"");
+					insertCommand.append("," + "\"" + movie.getDescription().replaceAll("\"", "'") + "\"");
 				} else {
 					insertCommand.append("," + null);
 				}
