@@ -94,9 +94,10 @@ public class ShowtimeQuery {
 			
 			StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_SHOWTIMES);
 			query.append(" WHERE " + COLLUMN_THEATERID + " IS " + theaterID + " AND ");
-			query.append(COLLUMN_MOVIEID + " IS " + movieID + " AND ");
-			query.append(COLLUMN_DATETIME + " IS " + dateTime);
+			query.append(COLLUMN_MOVIEID + " IS " + "\"" + movieID + "\"" + " AND ");
+			query.append(COLLUMN_DATETIME + " IS " + "\"" + dateTime  + "\"");
 			
+			System.out.println(query.toString());
 			ResultSet result = statement.executeQuery(query.toString());
 			
 			while (result.next()) {
@@ -127,8 +128,6 @@ public class ShowtimeQuery {
 			StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_SHOWTIMES);
 			query.append(" WHERE " + COLLUMN_MOVIEID + " IS " + "'" + movieID + "'" + " AND ");
 			query.append(COLLUMN_THEATERID + " IS " + theaterID);
-			
-			System.out.println(query.toString());
 			
 			ResultSet results = statement.executeQuery(query.toString());
 			while (results.next()) {
