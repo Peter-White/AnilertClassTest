@@ -20,7 +20,7 @@ public class JSONToSQL {
 	
 	// Stores the 
 	private Map<String, Movie> queryedMovies = new HashMap<>();
-	private Map<Integer, Theater> queryedTheater = new HashMap<>();
+	private Map<Integer, Theater> queryedTheaters = new HashMap<>();
 	private Set<Showtime> queryShowtimes = new HashSet<>();
 	
 	public Map<String, Movie> getQueryedMovies() {
@@ -28,7 +28,7 @@ public class JSONToSQL {
 	}
 
 	public Map<Integer, Theater> getQueryedTheater() {
-		return queryedTheater;
+		return queryedTheaters;
 	}
 
 	public Set<Showtime> getQueryShowtimes() {
@@ -68,8 +68,9 @@ public class JSONToSQL {
 	}
 	
 	// This function triggers the update of the movie, and showtime tables due to the design of the movie API
-	public void updateMovieTableBySingleTheater(Double lat, Double lng) {
-		Coordinates coordinates = new Coordinates(lat, lng, 0.05);
+	public void updateMovieTableBySingleTheater(Theater theater) {
+		queryedTheaters.put(theater.getTheaterId(), theater);
+		Coordinates coordinates = new Coordinates(theater.getLatitude(), theater.getLongitude(), 0.05);
 		MovieJSONQuery moviesJSON = new MovieJSONQuery();
 		
 		Map<String, JSONObject> movies = moviesJSON.queryMovieJSONByInput(
@@ -134,7 +135,7 @@ public class JSONToSQL {
 					e.printStackTrace();
 				}
 				
-				queryedTheater.put(theater.getTheaterId(), theater);
+				queryedTheaters.put(theater.getTheaterId(), theater);
 			}
 		}
 	}
