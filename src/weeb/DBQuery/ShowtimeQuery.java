@@ -97,7 +97,6 @@ public class ShowtimeQuery {
 			query.append(COLLUMN_MOVIEID + " IS " + "\"" + movieID + "\"" + " AND ");
 			query.append(COLLUMN_DATETIME + " IS " + "\"" + dateTime  + "\"");
 			
-			System.out.println(query.toString());
 			ResultSet result = statement.executeQuery(query.toString());
 			
 			while (result.next()) {

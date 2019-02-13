@@ -1,17 +1,14 @@
 package weeb.JSONQuery;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import weeb.DBQuery.MovieQuery;
 import weeb.DBQuery.ShowtimeQuery;
 import weeb.DBQuery.TheaterQuery;
@@ -21,8 +18,22 @@ import weeb.data.Theater;
 
 public class JSONToSQL {
 	
+	// Stores the 
 	private Map<String, Movie> queryedMovies = new HashMap<>();
 	private Map<Integer, Theater> queryedTheater = new HashMap<>();
+	private Set<Showtime> queryShowtimes = new HashSet<>();
+	
+	public Map<String, Movie> getQueryedMovies() {
+		return queryedMovies;
+	}
+
+	public Map<Integer, Theater> getQueryedTheater() {
+		return queryedTheater;
+	}
+
+	public Set<Showtime> getQueryShowtimes() {
+		return queryShowtimes;
+	}
 	
 	// This function triggers the update of the movie, theater, and showtime tables due to the design of the movie API
 	public void updateMovieTableByUserInput(double lat, double lng, double rad) {
@@ -59,13 +70,21 @@ public class JSONToSQL {
 	// This function triggers the update of the movie, and showtime tables due to the design of the movie API
 	public void updateMovieTableBySingleTheater(Double lat, Double lng) {
 		Coordinates coordinates = new Coordinates(lat, lng, 0.05);
+		MovieJSONQuery moviesJSON = new MovieJSONQuery();
 		
-		Map<String, JSONObject> movies = new MovieJSONQuery().queryMovieJSONByInput(
+		Map<String, JSONObject> movies = moviesJSON.queryMovieJSONByInput(
 				coordinates.getLatitude(), 
 				coordinates.getLongitude(), 
 				coordinates.getRadius());
+		
 		movies.forEach((key, value) -> {
-			System.out.println(key);
+			if(moviesJSON.isAnime(value)) {
+				Movie anime = JSONObjectToMovie(value);
+				anime = MovieQuery.addAnimeToDb(anime);
+				queryedMovies.put(anime.getMovieId(), anime);
+				
+				updateShowtimeTable(value);
+			}
 		});
 
 	}
@@ -83,6 +102,7 @@ public class JSONToSQL {
 																			showtimeObject.getString("dateTime")) == null) {
 					Showtime showtime = JSONObjectToShowtime(movieJSON.getString("tmsId"), showtimeObject);
 					showtime = ShowtimeQuery.addShowtimeToDb(showtime);
+					queryShowtimes.add(showtime);
 				}
 			}
 		}
@@ -91,7 +111,7 @@ public class JSONToSQL {
 			e1.printStackTrace();
 		}
 	}
-	
+
 	public void updateTheaterTable(JSONArray showtimesArray, Coordinates coordinates) {
 		
 		if(showtimesArray.length() > 0) {
