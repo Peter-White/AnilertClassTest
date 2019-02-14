@@ -24,7 +24,12 @@ public class Main {
 		while (!quit) {
 			JSONObject locationData = userLocation();
 			if(locationData != null) {
-				System.out.println(locationData.toString());
+				double radius = getSearchRadius();
+				if(radius == -1) {
+					System.out.println("Dead");
+				} else {
+					System.out.println("Keep Going");
+				}
 			}
 			
 		}
@@ -57,28 +62,32 @@ public class Main {
 				Map<Integer, JSONObject> placeCandidates;
 				try {
 					placeCandidates = new TheaterJSONQuery().userLocationSearchResults(myPlace);
-					System.out.println("Results:");
-					placeCandidates.forEach((key, value) -> {
-						try {
-							System.out.println(key + ": " + value.getString("formatted_address"));
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+					if(!placeCandidates.isEmpty()) {
+						System.out.println("Results:");
+						placeCandidates.forEach((key, value) -> {
+							try {
+								System.out.println(key + ": " + value.getString("formatted_address"));
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						});
+						boolean backToMain = false;
+						while (!backToMain) {
+							System.out.println("Enter your loaction number or 0 if it is not present");
+							int choice = scanner.nextInt();
+							scanner.nextLine();
+							if(choice == 0) {
+								System.out.println("Try to be more specific.");
+								backToMain = true;
+							} else if (placeCandidates.containsKey(choice)) {
+								return placeCandidates.get(choice).getJSONObject("geometry").getJSONObject("location");
+							} else {
+								System.out.println("Selection not available. Please try again.");
+							}
 						}
-					});
-					boolean backToMain = false;
-					while (!backToMain) {
-						System.out.println("Enter your loaction number or 0 if it is not present");
-						int choice = scanner.nextInt();
-						scanner.nextLine();
-						if(choice == 0) {
-							System.out.println("Try to be more specific.");
-							backToMain = true;
-						} else if (placeCandidates.containsKey(choice)) {
-							return placeCandidates.get(choice).getJSONObject("geometry").getJSONObject("location");
-						} else {
-							System.out.println("Selection not available. Please try again.");
-						}
+					} else {
+						System.out.println("Sorry no results. Try again.");
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -90,9 +99,19 @@ public class Main {
 		}
 	}
 	
+	// User enters their search radius note: this will be replaced with a selection menu with fixed numbers
 	public static double getSearchRadius() {
 		while (true) {
-			
+			System.out.println("Enter your search radius (km) or -1 to go back to location selection:");
+			double radius = scanner.nextDouble();
+			scanner.nextLine();
+			if(radius == -1) {
+				return -1;
+			} else if (radius > 0) {
+				return radius;
+			} else {
+				System.out.println("You cannot enter negitive numbers. Try Again");
+			}
 		}
 	}
 }
