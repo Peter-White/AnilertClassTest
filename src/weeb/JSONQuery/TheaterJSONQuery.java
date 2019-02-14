@@ -85,11 +85,11 @@ public class TheaterJSONQuery {
 		return theaterJSON;
 	}
 
-	
+	// This function allows users to enter their location and center their search radius, it doesn't really
+	// have anything to do with theaters other than it calls from the same api that gets their locations
+	public Map<Integer, JSONObject> userLocationSearchResults(String address) {
 
-	public Map<String, JSONObject> userLocationSearchResults(String address) {
-
-		Map<String, JSONObject> results = new HashMap<String, JSONObject>();
+		Map<Integer, JSONObject> results = new HashMap<>();
 		String addressConverted = address.replaceAll(" ", "%20");
 
 		urlPath = new StringBuilder(googlePlacesSearch);
@@ -105,7 +105,7 @@ public class TheaterJSONQuery {
 
 			for (int i = 0; i < candidates.length(); i++) {
 				JSONObject candidate = candidates.getJSONObject(i);
-				results.put(candidate.getString("formatted_address"), candidate);
+				results.put(i + 1, candidate);
 			}
 
 		} catch (JSONException | IOException e) {
