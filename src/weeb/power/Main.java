@@ -29,14 +29,22 @@ public class Main {
 					JSONToSQL jsonToSQL = new JSONToSQL();
 					
 					try {
-						jsonToSQL.updateMovieTableByUserInput(locationData.getInt("lat"), locationData.getInt("lng"), radius);
+						jsonToSQL.updateMovieTableByUserInput(locationData.getDouble("lat"), locationData.getDouble("lng"), radius);
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 						quit = true;
 					}
 					
-					
+					System.out.println("\nYour Theaters:");
+					jsonToSQL.getQueryedTheater().forEach((key, value) -> {
+						String result = value.getName();
+						int anicount = TheaterQuery.numberOfAnimeInTheater(value);
+						if(anicount > 0) {
+							result += " (" + anicount + ")";
+						}
+						System.out.println(result);
+					});
 				} else {
 					System.out.println("Back to location search");
 				}

@@ -19,6 +19,7 @@ public class TheaterQuery {
 	private static final String CONNECTION_STRING = "jdbc:sqlite:/home/leafcoder/SQL/" + DB_NAME;
 	
 	private static final String VIEW_ANIME_THEATERS = "anime_theaters";
+	private static final String COLLUMN_ANICOUNT = "COUNT(Showtimes.showtimeId)";
 	private static final String TABLE_THEATERS = "Theaters";
 	private static final String COLLUMN_THEATERID = "theaterId";
 	private static final String COLLUMN_NAME = "name";
@@ -53,6 +54,9 @@ public class TheaterQuery {
 						result.getString("place_id"));
 			}
 			
+			statement.close();
+			conn.close();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -83,6 +87,9 @@ public class TheaterQuery {
 						result.getString("place_id"));
 			}
 			
+			statement.close();
+			conn.close();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -111,6 +118,9 @@ public class TheaterQuery {
 						result.getDouble("longitude"),
 						result.getString("place_id"));
 			}
+			
+			statement.close();
+			conn.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -143,6 +153,9 @@ public class TheaterQuery {
 						result.getString("place_id"));
 			}
 			
+			statement.close();
+			conn.close();
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -167,6 +180,10 @@ public class TheaterQuery {
 						results.getString("place_id"));
 				theaterQuery.put(results.getString("address"), theater);
 			}
+			
+			statement.close();
+			conn.close();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -197,6 +214,9 @@ public class TheaterQuery {
 				addStatement.append("\"" + theater.getPlace_id()  + "\"" + ")");
 				
 				statement.execute(addStatement.toString());
+				
+				statement.close();
+				conn.close();
 			}
 			
 			theater = queryTheater(theater.getName(), theater.getAddress());
@@ -209,6 +229,7 @@ public class TheaterQuery {
 		return theater;
 	}
 	
+	// Returns the number of anime playing in a theater
 	public static int numberOfAnimeInTheater(Theater theater) {
 		int count = 0;
 		
@@ -217,17 +238,22 @@ public class TheaterQuery {
 			statement = conn.createStatement();
 			
 			StringBuilder query = new StringBuilder("SELECT * FROM " + VIEW_ANIME_THEATERS);
-			query.append("WHERE " + COLLUMN_ADDRESS + " = " + "\"" + theater.getAddress() + "\"");
-			
+			query.append(" WHERE " + COLLUMN_ADDRESS + " = " + "\"" + theater.getAddress() + "\"");
+
 			ResultSet result = statement.executeQuery(query.toString());
 			
 			while (result.next()) {
-				count = result.getInt("count");
+				count = result.getInt(COLLUMN_ANICOUNT);
 			}
+			
+			statement.close();
+			conn.close();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
 		return count;
 	}
+	
 }

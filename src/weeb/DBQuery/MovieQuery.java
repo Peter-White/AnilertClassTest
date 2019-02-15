@@ -48,7 +48,9 @@ public class MovieQuery {
 
 				movieQuery.put(results.getString(COLLUMN_TITLE), movie);
 			}
-
+			
+			statement.close();
+			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -74,9 +76,9 @@ public class MovieQuery {
 						result.getString(COLLUMN_DESCRIPTION), result.getInt(COLLUMN_RUNTIME),
 						result.getString(COLLUMN_RATING), result.getString(COLLUMN_OFFICIALSITE));
 			}
-
+			statement.close();
+			conn.close();
 		} catch (SQLException e) {
-			System.out.println("queryMovie triggered");
 			e.printStackTrace();
 			return null;
 		}
@@ -102,9 +104,10 @@ public class MovieQuery {
 						result.getString(COLLUMN_DESCRIPTION), result.getInt(COLLUMN_RUNTIME),
 						result.getString(COLLUMN_RATING), result.getString(COLLUMN_OFFICIALSITE));
 			}
-
+			
+			statement.close();
+			conn.close();
 		} catch (SQLException e) {
-			System.out.println("queryMovie triggered");
 			e.printStackTrace();
 			return null;
 		}
@@ -143,9 +146,10 @@ public class MovieQuery {
 				
 				insertCommand.append(")");
 				
-				System.out.println(insertCommand.toString());
-				
 				statement.execute(insertCommand.toString());
+				
+				statement.close();
+				conn.close();
 			}
 			
 			movie = queryAnime(movie.getTitle());

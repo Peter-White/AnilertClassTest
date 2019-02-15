@@ -133,6 +133,9 @@ public class ShowtimeQuery {
 				showtimes.add(showtime);
 			}
 			
+			statement.close();
+			conn.close();
+			
 		} catch (SQLException e) {
 			System.out.println("queryMovie triggered");
 			e.printStackTrace();
@@ -160,6 +163,9 @@ public class ShowtimeQuery {
 				
 				statement.execute(insertCommand.toString());
 				showtime = queryShowtime(showtime.getTheaterID(), showtime.getMovieID(), showtime.getDateTime());
+				
+				statement.close();
+				conn.close();
 			}
 			
 			showtime = queryShowtime(showtime.getTheaterID(), showtime.getMovieID(), showtime.getDateTime());
