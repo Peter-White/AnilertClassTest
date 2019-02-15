@@ -23,12 +23,6 @@ public class ShowtimeQuery {
 	
 	public static Connection conn;
 	public static Statement statement;
-	
-	private static Set<Showtime> showtimesInDb = ShowtimeQuery.queryAllShowtimes();
-	
-	public static Set<Showtime> getShowtimesInDb() {
-		return showtimesInDb;
-	}
 
 	public static Set<Showtime> queryAllShowtimes() {
 		Set<Showtime> showtimes = new HashSet<>();
@@ -166,10 +160,10 @@ public class ShowtimeQuery {
 				
 				statement.execute(insertCommand.toString());
 				showtime = queryShowtime(showtime.getTheaterID(), showtime.getMovieID(), showtime.getDateTime());
-				showtimesInDb.add(showtime);
-			} else {
-				showtime = queryShowtime(showtime.getTheaterID(), showtime.getMovieID(), showtime.getDateTime());
 			}
+			
+			showtime = queryShowtime(showtime.getTheaterID(), showtime.getMovieID(), showtime.getDateTime());
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

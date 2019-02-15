@@ -26,9 +26,9 @@ public class Main {
 			if(locationData != null) {
 				double radius = getSearchRadius();
 				if(radius == -1) {
-					System.out.println("Dead");
+					
 				} else {
-					System.out.println("Keep Going");
+					System.out.println("Back to location search");
 				}
 			}
 			

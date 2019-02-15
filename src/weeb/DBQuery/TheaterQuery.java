@@ -18,6 +18,7 @@ public class TheaterQuery {
 	private static final String DB_NAME = "Anilert.db";
 	private static final String CONNECTION_STRING = "jdbc:sqlite:/home/leafcoder/SQL/" + DB_NAME;
 	
+	private static final String VIEW_ANIME_THEATERS = "anime_theaters";
 	private static final String TABLE_THEATERS = "Theaters";
 	private static final String COLLUMN_THEATERID = "theaterId";
 	private static final String COLLUMN_NAME = "name";
@@ -28,12 +29,6 @@ public class TheaterQuery {
 	
 	public static Connection conn;
 	public static Statement statement;
-	
-	private static Map<String, Theater> theatersInDb = TheaterQuery.queryAllTheaters();
-	
-	public static Map<String, Theater> getTheatersInDb() {
-		return theatersInDb;
-	}
 
 	public static Theater queryTheater(String name, String address) {
 		
@@ -182,7 +177,7 @@ public class TheaterQuery {
 	public static Theater addTheaterToDB(Theater theater) {
 		
 		try {
-			if(!theatersInDb.containsKey(theater.getAddress())) {
+			if(queryTheater(theater.getName(), theater.getAddress()) == null) {
 				conn = DriverManager.getConnection(CONNECTION_STRING);
 				statement = conn.createStatement();
 				
@@ -202,12 +197,9 @@ public class TheaterQuery {
 				addStatement.append("\"" + theater.getPlace_id()  + "\"" + ")");
 				
 				statement.execute(addStatement.toString());
-				theater = queryTheater(theater.getName(), theater.getAddress());
-				theatersInDb.put(theater.getAddress(), theater);
-				System.out.println(theater.getName() + " added");
-			} else {
-				theater = theatersInDb.get(theater.getAddress());
 			}
+			
+			theater = queryTheater(theater.getName(), theater.getAddress());
 					
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -215,5 +207,27 @@ public class TheaterQuery {
 		}
 
 		return theater;
+	}
+	
+	public static int numberOfAnimeInTheater(Theater theater) {
+		int count = 0;
+		
+		try {
+			conn = DriverManager.getConnection(CONNECTION_STRING);
+			statement = conn.createStatement();
+			
+			StringBuilder query = new StringBuilder("SELECT * FROM " + VIEW_ANIME_THEATERS);
+			query.append("WHERE " + COLLUMN_ADDRESS + " = " + "\"" + theater.getAddress() + "\"");
+			
+			ResultSet result = statement.executeQuery(query.toString());
+			
+			while (result.next()) {
+				count = result.getInt("count");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return count;
 	}
 }

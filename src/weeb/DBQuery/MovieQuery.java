@@ -30,14 +30,6 @@ public class MovieQuery {
 	private static final String COLLUMN_RATING = "rating";
 	private static final String COLLUMN_OFFICIALSITE = "officialSite";
 
-	// All movies that pass through the anime filter are stored and filtered as
-	// anime
-	private static Map<String, Movie> animeInDb = MovieQuery.queryAllAnime();
-
-	public static Map<String, Movie> getAnimeInDb() {
-		return animeInDb;
-	}
-
 	public static Connection conn;
 	public static Statement statement;
 
@@ -121,9 +113,9 @@ public class MovieQuery {
 	}
 
 	public static Movie addAnimeToDb(Movie movie) {
-
+		
 		try {
-			if (!animeInDb.containsKey(movie.getTitle())) {
+			if (queryAnime(movie.getTitle()) == null) {
 				conn = DriverManager.getConnection(CONNECTION_STRING);
 				statement = conn.createStatement();
 
@@ -154,11 +146,9 @@ public class MovieQuery {
 				System.out.println(insertCommand.toString());
 				
 				statement.execute(insertCommand.toString());
-				movie = queryAnime(movie.getTitle());
-				animeInDb.put(movie.getTitle(), movie);
-			} else {
-				movie = animeInDb.get(movie.getTitle());
 			}
+			
+			movie = queryAnime(movie.getTitle());
 
 		} catch (SQLException e) {
 			e.printStackTrace();
