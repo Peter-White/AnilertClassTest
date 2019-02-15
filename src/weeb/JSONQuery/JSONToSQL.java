@@ -52,7 +52,6 @@ public class JSONToSQL {
 				JSONArray showtimes =  value.getJSONArray("showtimes");
 				updateTheaterTable(showtimes, coordinates);
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -107,9 +106,8 @@ public class JSONToSQL {
 				}
 			}
 		}
-		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -188,11 +186,6 @@ public class JSONToSQL {
 			showtime.setMovieID(movieID);
 			showtime.setDateTime(showtimeObject.getString("dateTime"));
 			showtime.setTheaterID(showtimeObject.getJSONObject("theatre").getInt("id"));
-			if(showtimeObject.getString("ticketURI") != null) {
-				showtime.setPurchaseLink(showtimeObject.getString("ticketURI"));
-			} else {
-				showtime.setPurchaseLink(null);
-			}
 			
 		} catch (JSONException e) {
 			e.printStackTrace();

@@ -8,15 +8,13 @@ public class Showtime {
 	private int theaterID;
 	private String movieID;
 	private String dateTime;
-	private String purchaseLink;
 	
-	public Showtime(int showtimeId, int theaterID, String movieID, String dateTime, String purchaseLink) {
+	public Showtime(int showtimeId, int theaterID, String movieID, String dateTime) {
 		super();
 		this.showtimeId = showtimeId;
 		this.theaterID = theaterID;
 		this.movieID = movieID;
 		this.dateTime = dateTime;
-		this.purchaseLink = purchaseLink;
 	}
 	
 	public Showtime() {
@@ -53,14 +51,6 @@ public class Showtime {
 
 	public void setDateTime(String dateTime) {
 		this.dateTime = dateTime;
-	}
-
-	public String getPurchaseLink() {
-		return purchaseLink;
-	}
-
-	public void setPurchaseLink(String purchaseLink) {
-		this.purchaseLink = purchaseLink;
 	}
 	
 }

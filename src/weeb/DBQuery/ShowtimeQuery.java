@@ -36,8 +36,7 @@ public class ShowtimeQuery {
 				Showtime showtime = new Showtime(results.getInt(COLLUMN_SHOWTIMEID), 
 										results.getInt(COLLUMN_THEATERID), 
 										results.getString(COLLUMN_MOVIEID), 
-										results.getString(COLLUMN_DATETIME), 
-										results.getString(COLLUMN_PURCHASELINK));
+										results.getString(COLLUMN_DATETIME));
 				
 				showtimes.add(showtime);
 			}
@@ -66,8 +65,7 @@ public class ShowtimeQuery {
 				showtime = new Showtime(result.getInt(COLLUMN_SHOWTIMEID), 
 						result.getInt(COLLUMN_THEATERID), 
 						result.getString(COLLUMN_MOVIEID), 
-						result.getString(COLLUMN_DATETIME), 
-						result.getString(COLLUMN_PURCHASELINK));
+						result.getString(COLLUMN_DATETIME));
 			}
 
 		} catch (SQLException e) {
@@ -98,8 +96,7 @@ public class ShowtimeQuery {
 				showtime = new Showtime(result.getInt(COLLUMN_SHOWTIMEID), 
 						result.getInt(COLLUMN_THEATERID), 
 						result.getString(COLLUMN_MOVIEID), 
-						result.getString(COLLUMN_DATETIME), 
-						result.getString(COLLUMN_PURCHASELINK));
+						result.getString(COLLUMN_DATETIME));
 			}
 
 		} catch (SQLException e) {
@@ -127,8 +124,7 @@ public class ShowtimeQuery {
 				Showtime showtime = new Showtime(results.getInt(COLLUMN_SHOWTIMEID), 
 						results.getInt(COLLUMN_THEATERID), 
 						results.getString(COLLUMN_MOVIEID), 
-						results.getString(COLLUMN_DATETIME), 
-						results.getString(COLLUMN_PURCHASELINK));
+						results.getString(COLLUMN_DATETIME));
 
 				showtimes.add(showtime);
 			}
@@ -153,12 +149,11 @@ public class ShowtimeQuery {
 				statement = conn.createStatement();
 				
 				StringBuilder insertCommand = new StringBuilder("INSERT INTO " + TABLE_SHOWTIMES);
-				insertCommand.append("(" + COLLUMN_THEATERID + "," + COLLUMN_MOVIEID + "," + COLLUMN_DATETIME + "," + COLLUMN_PURCHASELINK + ")");
+				insertCommand.append("(" + COLLUMN_THEATERID + "," + COLLUMN_MOVIEID + "," + COLLUMN_DATETIME + ")");
 				insertCommand.append(" VALUES (");
 				insertCommand.append(showtime.getTheaterID());
 				insertCommand.append("," + "\"" + showtime.getMovieID() + "\"");
 				insertCommand.append("," + "\"" + showtime.getDateTime() + "\"");
-				insertCommand.append("," + "\"" + showtime.getPurchaseLink() + "\"");
 				insertCommand.append(")");
 				
 				statement.execute(insertCommand.toString());
