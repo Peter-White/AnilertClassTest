@@ -25,7 +25,17 @@ public class Main {
 			JSONObject locationData = userLocation();
 			if(locationData != null) {
 				double radius = getSearchRadius();
-				if(radius == -1) {
+				if(radius != -1) {
+					JSONToSQL jsonToSQL = new JSONToSQL();
+					
+					try {
+						jsonToSQL.updateMovieTableByUserInput(locationData.getInt("lat"), locationData.getInt("lng"), radius);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						quit = true;
+					}
+					
 					
 				} else {
 					System.out.println("Back to location search");
