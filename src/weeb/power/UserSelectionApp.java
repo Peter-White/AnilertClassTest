@@ -16,7 +16,7 @@ import weeb.JSONQuery.TheaterJSONQuery;
 import weeb.data.Movie;
 import weeb.data.Theater;
 
-public class Main {
+public class UserSelectionApp {
 	public static Scanner scanner = new Scanner(System.in);
 	
 	public static void main(String[] args) {
@@ -55,7 +55,6 @@ public class Main {
 				}
 			}
 		}
-		
 	}
 	
 	// Menu for selected the users local theaters
@@ -74,7 +73,7 @@ public class Main {
 			selectableTheaters.forEach((pos, theater) -> {
 				System.out.println(pos + ": " + theater.getName() + " (" + TheaterQuery.numberOfAnimeInTheater(theater) + ")");
 			});
-			System.out.println("Enter the number of the Theater to open it's menu or -1 to back out:");
+			System.out.println("\nEnter the number of the Theater to open it's menu or -1 to back out:");
 			int choice = scanner.nextInt();
 			scanner.nextLine();
 			if(selectableTheaters.containsKey(choice)) {
@@ -87,6 +86,7 @@ public class Main {
 		}
 	}
 	
+	// This is the menu that allows users to view and select the anime to be played at the selected theater
 	public static void theaterMenu(Theater theater) {
 		
 		System.out.println(theater.getName());
@@ -104,20 +104,28 @@ public class Main {
 		
 		while(true) {
 			
-			System.out.println("Anime playing at " + theater.getName());
+			System.out.println("\nAnime playing at " + theater.getName());
 			animeSelection.forEach((key, value) -> {
 				System.out.println(key + ": " + value.getTitle());
 			});
 			
-			System.out.println("Select the movie number you want to view");
+			System.out.println("\nSelect the movie number you want to view");
 			int choice = scanner.nextInt();
 			scanner.nextLine();
 			
+			System.out.println("\n*" + animeSelection.get(choice).getTitle() + "*");
 			if(animeSelection.get(choice).getDescription() != null) {
 				System.out.println(animeSelection.get(choice).getDescription());
 			}
-			System.out.println(animeSelection.get(choice).getRating());
-			System.out.println(MovieQuery.runtimeConvert(animeSelection.get(choice).getRuntime()));
+			
+			Movie anime = animeSelection.get(choice);
+			
+			System.out.println(anime.getRating());
+			System.out.println(MovieQuery.runtimeConvert(anime.getRuntime()));
+			System.out.println("\nShowtimes");
+			movieAndShowtimeIds.get(anime.getMovieId()).forEach((showtime) -> {
+				System.out.println();
+			});
 		}
 		
 	}
@@ -143,10 +151,10 @@ public class Main {
 						});
 						boolean backToMain = false;
 						while (!backToMain) {
-							System.out.println("Enter your loaction number or 0 if it is not present");
+							System.out.println("Enter your loaction number or -1 if it is not present");
 							int choice = scanner.nextInt();
 							scanner.nextLine();
-							if(choice == 0) {
+							if(choice == -1) {
 								System.out.println("Try to be more specific.");
 								backToMain = true;
 							} else if (placeCandidates.containsKey(choice)) {
@@ -171,7 +179,7 @@ public class Main {
 	// User enters their search radius note: this will be replaced with a selection menu with fixed numbers
 	public static double getSearchRadiusMenu() {
 		while (true) {
-			System.out.println("Enter your search radius (km) or -1 to go back to location selection:");
+			System.out.println("\nEnter your search radius (km) or -1 to go back to location selection:");
 			double radius = scanner.nextDouble();
 			scanner.nextLine();
 			if(radius == -1) {

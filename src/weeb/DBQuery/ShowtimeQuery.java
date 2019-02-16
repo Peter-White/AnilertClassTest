@@ -195,7 +195,7 @@ public class ShowtimeQuery {
 		return showtime;
 	}
 	
-	// Needs fixing
+	// This grabs the id of the anime playing at the select theater and the showtimeids for when they play
 	public static Map<String, Set<Integer>> getMoviesAndShowtimesForTheater(Theater theater) {
 		
 		Map<String, Set<Integer>> movieShowtimes = null;
