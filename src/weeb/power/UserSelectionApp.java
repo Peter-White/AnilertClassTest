@@ -1,12 +1,18 @@
 package weeb.power;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import weeb.DBQuery.MovieQuery;
 import weeb.DBQuery.ShowtimeQuery;
 import weeb.DBQuery.TheaterQuery;
@@ -14,6 +20,7 @@ import weeb.JSONQuery.JSONToSQL;
 import weeb.JSONQuery.MovieJSONQuery;
 import weeb.JSONQuery.TheaterJSONQuery;
 import weeb.data.Movie;
+import weeb.data.Showtime;
 import weeb.data.Theater;
 
 public class UserSelectionApp {
@@ -123,8 +130,12 @@ public class UserSelectionApp {
 			System.out.println(anime.getRating());
 			System.out.println(MovieQuery.runtimeConvert(anime.getRuntime()));
 			System.out.println("\nShowtimes");
-			movieAndShowtimeIds.get(anime.getMovieId()).forEach((showtime) -> {
-				System.out.println();
+			movieAndShowtimeIds.get(anime.getMovieId()).forEach((id) -> {
+				Showtime showtime = ShowtimeQuery.queryShowtime(id);
+				Date showDate = datetimeConvert(showtime.getDateTime());
+				String pattern = "h:mm a - EEEE, MMMMM, d, yyyy";
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+				System.out.println(simpleDateFormat.format(showDate));
 			});
 		}
 		
@@ -190,5 +201,22 @@ public class UserSelectionApp {
 				System.out.println("You cannot enter negitive numbers. Try Again");
 			}
 		}
+	}
+	
+	public static Date datetimeConvert(String showtimeDateTime) {
+		Pattern regExPattern = Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2})");
+		Matcher matcher = regExPattern.matcher(showtimeDateTime);
+		
+		Date date = new Date();
+		while(matcher.find()) {
+			date.setYear(Integer.parseInt(matcher.group(1)) - 1900);
+			date.setMonth(Integer.parseInt(matcher.group(2))-1);
+			date.setDate(Integer.parseInt(matcher.group(3)));
+			date.setHours(Integer.parseInt(matcher.group(4)));
+			date.setMinutes(Integer.parseInt(matcher.group(5)));
+			date.setSeconds(0);
+		}
+		
+		return date;
 	}
 }
