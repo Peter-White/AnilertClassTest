@@ -5,21 +5,42 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+
+import weeb.data.Movie;
 import weeb.data.Showtime;
+import weeb.data.Theater;
 
 public class ShowtimeQuery {
 
 	private static final String DB_NAME = "Anilert.db";
 	private static final String CONNECTION_STRING = "jdbc:sqlite:/home/leafcoder/SQL/" + DB_NAME;
 	
+	// Because showtime acts as a many-to-many table for movies and 
+	// theaters all SQL columns and tables will be needed
 	private static final String TABLE_SHOWTIMES = "Showtimes";
 	private static final String COLLUMN_SHOWTIMEID = "showtimeId";
-	private static final String COLLUMN_THEATERID = "theaterID";
-	private static final String COLLUMN_MOVIEID = "movieID";
+	private static final String COLLUMN_THEATER_ID = "theaterID";
+	private static final String COLLUMN_MOVIE_ID = "movieID";
 	private static final String COLLUMN_DATETIME = "dateTime";
-	private static final String COLLUMN_PURCHASELINK = "purchaseLink";
+	private static final String TABLE_MOVIES = "Movies";
+	private static final String COLLUMN_MOVIEID = "movieId";
+	private static final String COLLUMN_TITLE = "title";
+	private static final String COLLUMN_DESCRIPTION = "description";
+	private static final String COLLUMN_RUNTIME = "runtime";
+	private static final String COLLUMN_RATING = "rating";
+	private static final String COLLUMN_OFFICIALSITE = "officialSite";
+	private static final String TABLE_THEATERS = "Theaters";
+	private static final String COLLUMN_THEATERID = "theaterId";
+	private static final String COLLUMN_NAME = "name";
+	private static final String COLLUMN_ADDRESS = "address";
+	private static final String COLLUMN_LATITUDE = "latitude";
+	private static final String COLLUMN_LONGITUDE = "longitude";
+	private static final String COLLUMN_PLACE_ID = "place_id";
+	
 	
 	public static Connection conn;
 	public static Statement statement;
@@ -34,8 +55,8 @@ public class ShowtimeQuery {
 			ResultSet results = statement.executeQuery("SELECT * FROM " + TABLE_SHOWTIMES);
 			while (results.next()) {
 				Showtime showtime = new Showtime(results.getInt(COLLUMN_SHOWTIMEID), 
-										results.getInt(COLLUMN_THEATERID), 
-										results.getString(COLLUMN_MOVIEID), 
+										results.getInt(COLLUMN_THEATER_ID), 
+										results.getString(COLLUMN_MOVIE_ID), 
 										results.getString(COLLUMN_DATETIME));
 				
 				showtimes.add(showtime);
@@ -63,8 +84,8 @@ public class ShowtimeQuery {
 			while (result.next()) {
 
 				showtime = new Showtime(result.getInt(COLLUMN_SHOWTIMEID), 
-						result.getInt(COLLUMN_THEATERID), 
-						result.getString(COLLUMN_MOVIEID), 
+						result.getInt(COLLUMN_THEATER_ID), 
+						result.getString(COLLUMN_MOVIE_ID), 
 						result.getString(COLLUMN_DATETIME));
 			}
 
@@ -85,8 +106,8 @@ public class ShowtimeQuery {
 			statement = conn.createStatement();
 			
 			StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_SHOWTIMES);
-			query.append(" WHERE " + COLLUMN_THEATERID + " IS " + theaterID + " AND ");
-			query.append(COLLUMN_MOVIEID + " IS " + "\"" + movieID + "\"" + " AND ");
+			query.append(" WHERE " + COLLUMN_THEATER_ID + " IS " + theaterID + " AND ");
+			query.append(COLLUMN_MOVIE_ID + " IS " + "\"" + movieID + "\"" + " AND ");
 			query.append(COLLUMN_DATETIME + " IS " + "\"" + dateTime  + "\"");
 			
 			ResultSet result = statement.executeQuery(query.toString());
@@ -94,8 +115,8 @@ public class ShowtimeQuery {
 			while (result.next()) {
 
 				showtime = new Showtime(result.getInt(COLLUMN_SHOWTIMEID), 
-						result.getInt(COLLUMN_THEATERID), 
-						result.getString(COLLUMN_MOVIEID), 
+						result.getInt(COLLUMN_THEATER_ID), 
+						result.getString(COLLUMN_MOVIE_ID), 
 						result.getString(COLLUMN_DATETIME));
 			}
 
@@ -116,14 +137,14 @@ public class ShowtimeQuery {
 			statement = conn.createStatement();
 			
 			StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_SHOWTIMES);
-			query.append(" WHERE " + COLLUMN_MOVIEID + " IS " + "'" + movieID + "'" + " AND ");
-			query.append(COLLUMN_THEATERID + " IS " + theaterID);
+			query.append(" WHERE " + COLLUMN_MOVIE_ID + " IS " + "'" + movieID + "'" + " AND ");
+			query.append(COLLUMN_THEATER_ID + " IS " + theaterID);
 			
 			ResultSet results = statement.executeQuery(query.toString());
 			while (results.next()) {
 				Showtime showtime = new Showtime(results.getInt(COLLUMN_SHOWTIMEID), 
-						results.getInt(COLLUMN_THEATERID), 
-						results.getString(COLLUMN_MOVIEID), 
+						results.getInt(COLLUMN_THEATER_ID), 
+						results.getString(COLLUMN_MOVIE_ID), 
 						results.getString(COLLUMN_DATETIME));
 
 				showtimes.add(showtime);
@@ -149,7 +170,7 @@ public class ShowtimeQuery {
 				statement = conn.createStatement();
 				
 				StringBuilder insertCommand = new StringBuilder("INSERT INTO " + TABLE_SHOWTIMES);
-				insertCommand.append("(" + COLLUMN_THEATERID + "," + COLLUMN_MOVIEID + "," + COLLUMN_DATETIME + ")");
+				insertCommand.append("(" + COLLUMN_THEATER_ID + "," + COLLUMN_MOVIE_ID + "," + COLLUMN_DATETIME + ")");
 				insertCommand.append(" VALUES (");
 				insertCommand.append(showtime.getTheaterID());
 				insertCommand.append("," + "\"" + showtime.getMovieID() + "\"");
@@ -172,5 +193,47 @@ public class ShowtimeQuery {
 		}
 			
 		return showtime;
+	}
+	
+	public static Map<String, Set<Integer>> getMoviesAndShowtimesForTheater(Theater theater) {
+		
+		Map<String, Set<Integer>> movieShowtimes = null;
+		
+		try {
+			conn = DriverManager.getConnection(CONNECTION_STRING);
+			statement = conn.createStatement();
+			
+			StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_SHOWTIMES);
+			query.append("JOIN " + TABLE_MOVIES + " ON ");
+			query.append(TABLE_SHOWTIMES + "." + COLLUMN_MOVIE_ID + " = " + TABLE_MOVIES + "." + COLLUMN_MOVIEID);
+			query.append(" WHERE " + TABLE_SHOWTIMES + "." + COLLUMN_THEATER_ID + " = ");
+			query.append(theater.getTheaterId());
+			
+			ResultSet results = statement.executeQuery(query.toString());
+			movieShowtimes = new HashMap<String, Set<Integer>>();
+			
+			while (results.next()) {
+				String movieID = MovieQuery.queryAnime(results.getInt("movieID")).getMovieId();
+				if(!movieShowtimes.containsKey(movieID)) {
+					Set<Integer> showtimeIds = new HashSet<>();
+					StringBuilder queryMovie = query;
+					queryMovie.append(" AND " + TABLE_SHOWTIMES + "." + COLLUMN_MOVIEID + " = " + "\"" + movieID + "\"");
+					
+					ResultSet moreResults = statement.executeQuery(queryMovie.toString());
+					while(moreResults.next()) {
+						showtimeIds.add(moreResults.getInt("showtimeId"));
+					}
+					movieShowtimes.put(movieID, showtimeIds);
+				}
+			}
+			
+			statement.close();
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return movieShowtimes;
 	}
 }

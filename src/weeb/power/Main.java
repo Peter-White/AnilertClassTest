@@ -3,6 +3,7 @@ package weeb.power;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,6 +11,7 @@ import org.json.JSONObject;
 import weeb.DBQuery.TheaterQuery;
 import weeb.JSONQuery.JSONToSQL;
 import weeb.JSONQuery.TheaterJSONQuery;
+import weeb.data.Movie;
 import weeb.data.Theater;
 
 public class Main {
@@ -22,9 +24,9 @@ public class Main {
 		boolean quit = false;
 		System.out.println();
 		while (!quit) {
-			JSONObject locationData = userLocation();
+			JSONObject locationData = userLocationMenu();
 			if(locationData != null) {
-				double radius = getSearchRadius();
+				double radius = getSearchRadiusMenu();
 				if(radius != -1) {
 					JSONToSQL jsonToSQL = new JSONToSQL();
 					
@@ -36,43 +38,72 @@ public class Main {
 						quit = true;
 					}
 					
-					System.out.println("\nYour Theaters:");
-					jsonToSQL.getQueryedTheater().forEach((key, value) -> {
-						String result = value.getName();
-						int anicount = TheaterQuery.numberOfAnimeInTheater(value);
-						if(anicount > 0) {
-							result += " (" + anicount + ")";
+					while(true) {
+						Theater theater = theaterSelectMenu(jsonToSQL.getQueryedTheater());
+						if(theater == null) {
+							System.out.println("Back to location search");
+							break;
+						} else {
+							
 						}
-						System.out.println(result);
-					});
+					}
+					
 				} else {
 					System.out.println("Back to location search");
 				}
 			}
 			
 		}
-//		
-//		Map<String, JSONObject> userResults = new TheaterJSONQuery().userLocationSearchResults("Boston");
-//		
-//		JSONObject userLocation = userResults.get("Boston, MA, USA");
-//
-//		try {
-//			double userLatitude = userLocation.getJSONObject("geometry").getJSONObject("location").getDouble("lat");
-//			double userLongitude = userLocation.getJSONObject("geometry").getJSONObject("location").getDouble("lng");
-//			
-//			int userChosenRadius = 50;
-//			
-//			JSONToSQL jsonToSQL = new JSONToSQL();
-//			jsonToSQL.updateMovieTableByUserInput(userLatitude, userLongitude, userChosenRadius);
-//		} catch (JSONException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		
+	}
+	
+	// Menu for selected the users local theaters
+	public static Theater theaterSelectMenu(Map<Integer, Theater> theaters) {
+		
+		Map<Integer, Theater> selectableTheaters = new HashMap<>();
+		
+		int count = 1;
+		for (Map.Entry<Integer, Theater> entry : theaters.entrySet()) {
+			selectableTheaters.put(count, entry.getValue());
+			count++;
+		}
+		
+		while (true) {
+			System.out.println("Your local theaters:");
+			selectableTheaters.forEach((pos, theater) -> {
+				System.out.println(pos + ": " + theater.getName());
+			});
+			System.out.println("Enter the number of the Theater to open it's menu or -1 to back out:");
+			int choice = scanner.nextInt();
+			scanner.nextLine();
+			if(selectableTheaters.containsKey(choice)) {
+				return selectableTheaters.get(choice);
+			} else if (choice == -1) {
+				return null;
+			} else {
+				System.out.println("Not an option. Please try again.");
+			}
+		}
+	}
+	
+	public static void theaterMenu(Theater theater) {
+		
+		System.out.println(theater.getName());
+		System.out.println(theater.getAddress());
+		
+		while(true) {
+			
+			HashMap<String, Set<Integer>> movieAndShowtimeIds = new HashMap<>();
+			for (Map.Entry<String, Set<Integer>> entry : movieAndShowtimeIds.entrySet()) {
+				
+			}
+			
+		}
 		
 	}
 	
 	// User types in an address and sets the center for the movie search
-	public static JSONObject userLocation() {
+	public static JSONObject userLocationMenu() {
 		while (true) {
 			System.out.println("Enter your place (or 'quit' to leave):");
 			String myPlace = scanner.nextLine();
@@ -118,7 +149,7 @@ public class Main {
 	}
 	
 	// User enters their search radius note: this will be replaced with a selection menu with fixed numbers
-	public static double getSearchRadius() {
+	public static double getSearchRadiusMenu() {
 		while (true) {
 			System.out.println("Enter your search radius (km) or -1 to go back to location selection:");
 			double radius = scanner.nextDouble();
