@@ -58,7 +58,7 @@ public class MovieQuery {
 		return movieQuery;
 	}
 
-	public static Movie queryAnime(int movieId) {
+	public static Movie queryAnimeById(String movieId) {
 		Movie movie = null;
 
 		try {
@@ -86,7 +86,7 @@ public class MovieQuery {
 		return movie;
 	}
 
-	public static Movie queryAnime(String title) {
+	public static Movie queryAnimeByName(String title) {
 		Movie movie = null;
 
 		try {
@@ -118,7 +118,7 @@ public class MovieQuery {
 	public static Movie addAnimeToDb(Movie movie) {
 		
 		try {
-			if (queryAnime(movie.getTitle()) == null) {
+			if (queryAnimeByName(movie.getTitle()) == null) {
 				conn = DriverManager.getConnection(CONNECTION_STRING);
 				statement = conn.createStatement();
 
@@ -152,7 +152,7 @@ public class MovieQuery {
 				conn.close();
 			}
 			
-			movie = queryAnime(movie.getTitle());
+			movie = queryAnimeByName(movie.getTitle());
 
 		} catch (SQLException e) {
 			e.printStackTrace();

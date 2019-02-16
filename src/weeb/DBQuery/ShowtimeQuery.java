@@ -204,7 +204,7 @@ public class ShowtimeQuery {
 			statement = conn.createStatement();
 			
 			StringBuilder query = new StringBuilder("SELECT * FROM " + TABLE_SHOWTIMES);
-			query.append("JOIN " + TABLE_MOVIES + " ON ");
+			query.append(" JOIN " + TABLE_MOVIES + " ON ");
 			query.append(TABLE_SHOWTIMES + "." + COLLUMN_MOVIE_ID + " = " + TABLE_MOVIES + "." + COLLUMN_MOVIEID);
 			query.append(" WHERE " + TABLE_SHOWTIMES + "." + COLLUMN_THEATER_ID + " = ");
 			query.append(theater.getTheaterId());
@@ -213,11 +213,11 @@ public class ShowtimeQuery {
 			movieShowtimes = new HashMap<String, Set<Integer>>();
 			
 			while (results.next()) {
-				String movieID = MovieQuery.queryAnime(results.getInt("movieID")).getMovieId();
+				String movieID = results.getString(COLLUMN_MOVIE_ID);
 				if(!movieShowtimes.containsKey(movieID)) {
 					Set<Integer> showtimeIds = new HashSet<>();
 					StringBuilder queryMovie = query;
-					queryMovie.append(" AND " + TABLE_SHOWTIMES + "." + COLLUMN_MOVIEID + " = " + "\"" + movieID + "\"");
+					queryMovie.append(" AND " + TABLE_SHOWTIMES + "." + COLLUMN_MOVIE_ID + " = " + "\"" + movieID + "\"");
 					
 					ResultSet moreResults = statement.executeQuery(queryMovie.toString());
 					while(moreResults.next()) {

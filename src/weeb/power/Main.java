@@ -5,55 +5,57 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import weeb.DBQuery.MovieQuery;
+import weeb.DBQuery.ShowtimeQuery;
 import weeb.DBQuery.TheaterQuery;
 import weeb.JSONQuery.JSONToSQL;
 import weeb.JSONQuery.TheaterJSONQuery;
-import weeb.data.Movie;
 import weeb.data.Theater;
 
 public class Main {
 	public static Scanner scanner = new Scanner(System.in);
 	
 	public static void main(String[] args) {
-		// Unlike my previous version I'm breaking the menus into functions
-		System.out.println("Welcome to the class based prototype for WeebWatch (Formally known as Anilert)");
+//		// Unlike my previous version I'm breaking the menus into functions
+//		System.out.println("Welcome to the class based prototype for WeebWatch (Formally known as Anilert)");
+//		
+//		boolean quit = false;
+//		System.out.println();
+//		while (!quit) {
+//			JSONObject locationData = userLocationMenu();
+//			if(locationData != null) {
+//				double radius = getSearchRadiusMenu();
+//				if(radius != -1) {
+//					JSONToSQL jsonToSQL = new JSONToSQL();
+//					
+//					try {
+//						jsonToSQL.updateMovieTableByUserInput(locationData.getDouble("lat"), locationData.getDouble("lng"), radius);
+//					} catch (JSONException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//						quit = true;
+//					}
+//					
+//					while(true) {
+//						Theater theater = theaterSelectMenu(jsonToSQL.getQueryedTheater());
+//						if(theater == null) {
+//							System.out.println("Back to location search");
+//							break;
+//						} else {
+//							theaterMenu(theater);
+//						}
+//					}
+//					
+//				} else {
+//					System.out.println("Back to location search");
+//				}
+//			}
+//			
+//		}
 		
-		boolean quit = false;
-		System.out.println();
-		while (!quit) {
-			JSONObject locationData = userLocationMenu();
-			if(locationData != null) {
-				double radius = getSearchRadiusMenu();
-				if(radius != -1) {
-					JSONToSQL jsonToSQL = new JSONToSQL();
-					
-					try {
-						jsonToSQL.updateMovieTableByUserInput(locationData.getDouble("lat"), locationData.getDouble("lng"), radius);
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						quit = true;
-					}
-					
-					while(true) {
-						Theater theater = theaterSelectMenu(jsonToSQL.getQueryedTheater());
-						if(theater == null) {
-							System.out.println("Back to location search");
-							break;
-						} else {
-							
-						}
-					}
-					
-				} else {
-					System.out.println("Back to location search");
-				}
-			}
-			
-		}
+		System.out.println(MovieQuery.queryAnimeById("EV000009588133").getTitle());
 		
 	}
 	
@@ -69,9 +71,9 @@ public class Main {
 		}
 		
 		while (true) {
-			System.out.println("Your local theaters:");
+			System.out.println("\nYour local theaters:");
 			selectableTheaters.forEach((pos, theater) -> {
-				System.out.println(pos + ": " + theater.getName());
+				System.out.println(pos + ": " + theater.getName() + "(" + TheaterQuery.numberOfAnimeInTheater(theater) + ")");
 			});
 			System.out.println("Enter the number of the Theater to open it's menu or -1 to back out:");
 			int choice = scanner.nextInt();
@@ -91,11 +93,16 @@ public class Main {
 		System.out.println(theater.getName());
 		System.out.println(theater.getAddress());
 		
+		Map<String, Set<Integer>> movieAndShowtimeIds = ShowtimeQuery.getMoviesAndShowtimesForTheater(theater);
+		
 		while(true) {
 			
-			HashMap<String, Set<Integer>> movieAndShowtimeIds = new HashMap<>();
-			for (Map.Entry<String, Set<Integer>> entry : movieAndShowtimeIds.entrySet()) {
-				
+			int count = 1;
+			Set<String> movies = movieAndShowtimeIds.keySet();
+			
+			for (String id : movies) {
+				System.out.println(count + ": " + MovieQuery.queryAnimeById(id).getTitle());
+				count++;
 			}
 			
 		}
