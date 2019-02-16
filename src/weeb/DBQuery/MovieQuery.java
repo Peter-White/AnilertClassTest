@@ -164,7 +164,7 @@ public class MovieQuery {
 
 	public static int runtimeConvert(String runTime) {
 		Pattern regExPattern = Pattern.compile("PT(\\d*)H(\\d*)M");
-		Matcher matcher = regExPattern.matcher("PT01H40M");
+		Matcher matcher = regExPattern.matcher(runTime);
 
 		int minutes = 0;
 		while (matcher.find()) {
@@ -182,7 +182,7 @@ public class MovieQuery {
 			hours++;
 		}
 
-		String runTimeConverted = (hours == 1) ? hours + " hour" : hours + " hours";
+		String runTimeConverted = (hours == 1) ? hours + " hour " : hours + " hours";
 		if (runtime != 0) {
 			runTimeConverted += (runtime == 1) ? runtime + " minute" : runtime + " minutes";
 		}

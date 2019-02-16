@@ -149,17 +149,4 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 
 		return false;
 	}
-	
-	public int runtimeConvert(String runTime) {
-		Pattern regExPattern = Pattern.compile("PT(\\d*)H(\\d*)M");
-		Matcher matcher = regExPattern.matcher("PT01H40M");
-		
-		int minutes = 0;
-		while (matcher.find()) {
-			minutes += Integer.parseInt(matcher.group(2));
-			minutes += Integer.parseInt(matcher.group(1)) * 60;
-		}
-		
-		return minutes;
-	}
 }

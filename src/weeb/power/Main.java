@@ -11,51 +11,50 @@ import weeb.DBQuery.MovieQuery;
 import weeb.DBQuery.ShowtimeQuery;
 import weeb.DBQuery.TheaterQuery;
 import weeb.JSONQuery.JSONToSQL;
+import weeb.JSONQuery.MovieJSONQuery;
 import weeb.JSONQuery.TheaterJSONQuery;
+import weeb.data.Movie;
 import weeb.data.Theater;
 
 public class Main {
 	public static Scanner scanner = new Scanner(System.in);
 	
 	public static void main(String[] args) {
-//		// Unlike my previous version I'm breaking the menus into functions
-//		System.out.println("Welcome to the class based prototype for WeebWatch (Formally known as Anilert)");
-//		
-//		boolean quit = false;
-//		System.out.println();
-//		while (!quit) {
-//			JSONObject locationData = userLocationMenu();
-//			if(locationData != null) {
-//				double radius = getSearchRadiusMenu();
-//				if(radius != -1) {
-//					JSONToSQL jsonToSQL = new JSONToSQL();
-//					
-//					try {
-//						jsonToSQL.updateMovieTableByUserInput(locationData.getDouble("lat"), locationData.getDouble("lng"), radius);
-//					} catch (JSONException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//						quit = true;
-//					}
-//					
-//					while(true) {
-//						Theater theater = theaterSelectMenu(jsonToSQL.getQueryedTheater());
-//						if(theater == null) {
-//							System.out.println("Back to location search");
-//							break;
-//						} else {
-//							theaterMenu(theater);
-//						}
-//					}
-//					
-//				} else {
-//					System.out.println("Back to location search");
-//				}
-//			}
-//			
-//		}
+		// Unlike my previous version I'm breaking the menus into functions
+		System.out.println("Welcome to the class based prototype for WeebWatch (Formally known as Anilert)");
 		
-		System.out.println(MovieQuery.queryAnimeById("EV000009588133").getTitle());
+		boolean quit = false;
+		System.out.println();
+		while (!quit) {
+			JSONObject locationData = userLocationMenu();
+			if(locationData != null) {
+				double radius = getSearchRadiusMenu();
+				if(radius != -1) {
+					JSONToSQL jsonToSQL = new JSONToSQL();
+					
+					try {
+						jsonToSQL.updateMovieTableByUserInput(locationData.getDouble("lat"), locationData.getDouble("lng"), radius);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						quit = true;
+					}
+					
+					while(true) {
+						Theater theater = theaterSelectMenu(jsonToSQL.getQueryedTheater());
+						if(theater == null) {
+							System.out.println("Back to location search");
+							break;
+						} else {
+							theaterMenu(theater);
+						}
+					}
+					
+				} else {
+					System.out.println("Back to location search");
+				}
+			}
+		}
 		
 	}
 	
@@ -73,7 +72,7 @@ public class Main {
 		while (true) {
 			System.out.println("\nYour local theaters:");
 			selectableTheaters.forEach((pos, theater) -> {
-				System.out.println(pos + ": " + theater.getName() + "(" + TheaterQuery.numberOfAnimeInTheater(theater) + ")");
+				System.out.println(pos + ": " + theater.getName() + " (" + TheaterQuery.numberOfAnimeInTheater(theater) + ")");
 			});
 			System.out.println("Enter the number of the Theater to open it's menu or -1 to back out:");
 			int choice = scanner.nextInt();
@@ -95,16 +94,29 @@ public class Main {
 		
 		Map<String, Set<Integer>> movieAndShowtimeIds = ShowtimeQuery.getMoviesAndShowtimesForTheater(theater);
 		
+		int count = 1;
+		Map<Integer, Movie> animeSelection = new HashMap<>();
+		
+		for (String id : movieAndShowtimeIds.keySet()) {
+			animeSelection.put(count, MovieQuery.queryAnimeById(id));
+		}
+		
 		while(true) {
 			
-			int count = 1;
-			Set<String> movies = movieAndShowtimeIds.keySet();
+			System.out.println("Anime playing at " + theater.getName());
+			animeSelection.forEach((key, value) -> {
+				System.out.println(key + ": " + value.getTitle());
+			});
 			
-			for (String id : movies) {
-				System.out.println(count + ": " + MovieQuery.queryAnimeById(id).getTitle());
-				count++;
+			System.out.println("Select the title you want to view");
+			int choice = scanner.nextInt();
+			scanner.nextLine();
+			
+			if(animeSelection.get(choice).getDescription() != null) {
+				System.out.println(animeSelection.get(choice).getDescription());
 			}
-			
+			System.out.println(animeSelection.get(choice).getRating());
+			System.out.println(MovieQuery.runtimeConvert(animeSelection.get(choice).getRuntime()));
 		}
 		
 	}

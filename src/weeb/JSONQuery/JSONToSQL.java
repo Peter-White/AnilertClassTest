@@ -156,7 +156,7 @@ public class JSONToSQL {
 			}
 			movie.setDescription(description);
 			
-			movie.setRuntime(runtimeConvert(movieJSON.getString("runTime")));
+			movie.setRuntime(MovieQuery.runtimeConvert(movieJSON.getString("runTime")));
 			if(movieJSON.has("ratings")) {
 				JSONArray ratings = movieJSON.getJSONArray("ratings");
 				JSONObject rating = (JSONObject) ratings.get(0);
@@ -211,19 +211,6 @@ public class JSONToSQL {
 		}
 		
 		return theater;
-	}
-	
-	public int runtimeConvert(String runTime) {
-		Pattern regExPattern = Pattern.compile("PT(\\d*)H(\\d*)M");
-		Matcher matcher = regExPattern.matcher("PT01H40M");
-		
-		int minutes = 0;
-		while (matcher.find()) {
-			minutes += Integer.parseInt(matcher.group(2));
-			minutes += Integer.parseInt(matcher.group(1)) * 60;
-		}
-		
-		return minutes;
 	}
 	
 	class Coordinates {
