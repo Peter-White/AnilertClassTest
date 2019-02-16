@@ -97,8 +97,9 @@ public class Main {
 		int count = 1;
 		Map<Integer, Movie> animeSelection = new HashMap<>();
 		
-		for (String id : movieAndShowtimeIds.keySet()) {
-			animeSelection.put(count, MovieQuery.queryAnimeById(id));
+		for (Map.Entry<String, Set<Integer>> entry : movieAndShowtimeIds.entrySet()) {
+			animeSelection.put(count, MovieQuery.queryAnimeById(entry.getKey()));
+			count++;
 		}
 		
 		while(true) {
@@ -108,7 +109,7 @@ public class Main {
 				System.out.println(key + ": " + value.getTitle());
 			});
 			
-			System.out.println("Select the title you want to view");
+			System.out.println("Select the movie number you want to view");
 			int choice = scanner.nextInt();
 			scanner.nextLine();
 			

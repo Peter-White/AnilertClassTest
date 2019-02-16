@@ -195,6 +195,7 @@ public class ShowtimeQuery {
 		return showtime;
 	}
 	
+	// Needs fixing
 	public static Map<String, Set<Integer>> getMoviesAndShowtimesForTheater(Theater theater) {
 		
 		Map<String, Set<Integer>> movieShowtimes = null;
@@ -216,14 +217,12 @@ public class ShowtimeQuery {
 				String movieID = results.getString(COLLUMN_MOVIE_ID);
 				if(!movieShowtimes.containsKey(movieID)) {
 					Set<Integer> showtimeIds = new HashSet<>();
-					StringBuilder queryMovie = query;
-					queryMovie.append(" AND " + TABLE_SHOWTIMES + "." + COLLUMN_MOVIE_ID + " = " + "\"" + movieID + "\"");
 					
-					ResultSet moreResults = statement.executeQuery(queryMovie.toString());
-					while(moreResults.next()) {
-						showtimeIds.add(moreResults.getInt("showtimeId"));
-					}
+					showtimeIds.add(results.getInt("showtimeId"));
 					movieShowtimes.put(movieID, showtimeIds);
+					
+				} else {
+					movieShowtimes.get(movieID).add(results.getInt("showtimeId"));
 				}
 			}
 			
