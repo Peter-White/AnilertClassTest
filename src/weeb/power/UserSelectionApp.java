@@ -133,7 +133,7 @@ public class UserSelectionApp {
 				System.out.println("\nShowtimes");
 				movieAndShowtimeIds.get(anime.getMovieId()).forEach((id) -> {
 					Showtime showtime = ShowtimeQuery.queryShowtime(id);
-					Date showDate = datetimeConvert(showtime.getDateTime());
+					Date showDate = ShowtimeQuery.datetimeConvert(showtime.getDateTime());
 					String pattern = "h:mm a - EEEE, MMMMM, d, yyyy";
 					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 					System.out.println(simpleDateFormat.format(showDate));
@@ -207,22 +207,5 @@ public class UserSelectionApp {
 				System.out.println("You cannot enter negitive numbers. Try Again");
 			}
 		}
-	}
-	
-	public static Date datetimeConvert(String showtimeDateTime) {
-		Pattern regExPattern = Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2})");
-		Matcher matcher = regExPattern.matcher(showtimeDateTime);
-		
-		Date date = new Date();
-		while(matcher.find()) {
-			date.setYear(Integer.parseInt(matcher.group(1)) - 1900);
-			date.setMonth(Integer.parseInt(matcher.group(2))-1);
-			date.setDate(Integer.parseInt(matcher.group(3)));
-			date.setHours(Integer.parseInt(matcher.group(4)));
-			date.setMinutes(Integer.parseInt(matcher.group(5)));
-			date.setSeconds(0);
-		}
-		
-		return date;
 	}
 }

@@ -5,10 +5,13 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import weeb.data.Movie;
 import weeb.data.Showtime;
@@ -255,5 +258,22 @@ public class ShowtimeQuery {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public static Date datetimeConvert(String showtimeDateTime) {
+		Pattern regExPattern = Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2})");
+		Matcher matcher = regExPattern.matcher(showtimeDateTime);
+		
+		Date date = new Date();
+		while(matcher.find()) {
+			date.setYear(Integer.parseInt(matcher.group(1)) - 1900);
+			date.setMonth(Integer.parseInt(matcher.group(2))-1);
+			date.setDate(Integer.parseInt(matcher.group(3)));
+			date.setHours(Integer.parseInt(matcher.group(4)));
+			date.setMinutes(Integer.parseInt(matcher.group(5)));
+			date.setSeconds(0);
+		}
+		
+		return date;
 	}
 }
