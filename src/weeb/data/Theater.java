@@ -8,8 +8,9 @@ public class Theater {
 	private double latitude;
 	private double longitude;
 	private String place_id;
+	private String timezone;
 	
-	public Theater(int theaterId, String name, String address, double latitude, double longitude, String place_id) {
+	public Theater(int theaterId, String name, String address, double latitude, double longitude, String place_id, String timezone) {
 		super();
 		this.theaterId = theaterId;
 		this.name = name;
@@ -17,10 +18,19 @@ public class Theater {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.place_id = place_id;
+		this.timezone = timezone;
 	}
 	
 	public Theater() {
 		
+	}
+	
+	public String getTimezone() {
+		return timezone;
+	}
+
+	public void setTimezone(String timezone) {
+		this.timezone = timezone;
 	}
 
 	public int getTheaterId() {

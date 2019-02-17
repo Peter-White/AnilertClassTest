@@ -15,7 +15,7 @@ import weeb.data.Theater;
 
 public class TheaterQuery {
 	
-	private static final String DB_NAME = "Anilert.db";
+	private static final String DB_NAME = "WeebWatch.db";
 	private static final String CONNECTION_STRING = "jdbc:sqlite:/home/leafcoder/SQL/" + DB_NAME;
 	
 	private static final String VIEW_ANIME_THEATERS = "anime_theaters";
@@ -27,6 +27,7 @@ public class TheaterQuery {
 	private static final String COLLUMN_LATITUDE = "latitude";
 	private static final String COLLUMN_LONGITUDE = "longitude";
 	private static final String COLLUMN_PLACE_ID = "place_id";
+	private static final String COLLUMN_TIMEZONE = "timezone";
 	
 	public static Connection conn;
 	public static Statement statement;
@@ -51,7 +52,8 @@ public class TheaterQuery {
 						result.getString("address"), 
 						result.getDouble("latitude"), 
 						result.getDouble("longitude"),
-						result.getString("place_id"));
+						result.getString("place_id"),
+						result.getString("timezone"));
 			}
 			
 			statement.close();
@@ -84,7 +86,8 @@ public class TheaterQuery {
 						result.getString("address"), 
 						result.getDouble("latitude"), 
 						result.getDouble("longitude"),
-						result.getString("place_id"));
+						result.getString("place_id"),
+						result.getString("timezone"));
 			}
 			
 			statement.close();
@@ -116,7 +119,8 @@ public class TheaterQuery {
 						result.getString("address"), 
 						result.getDouble("latitude"), 
 						result.getDouble("longitude"),
-						result.getString("place_id"));
+						result.getString("place_id"),
+						result.getString("timezone"));
 			}
 			
 			statement.close();
@@ -150,7 +154,8 @@ public class TheaterQuery {
 						result.getString("address"), 
 						result.getDouble("latitude"), 
 						result.getDouble("longitude"),
-						result.getString("place_id"));
+						result.getString("place_id"),
+						result.getString("timezone"));
 			}
 			
 			statement.close();
@@ -177,7 +182,8 @@ public class TheaterQuery {
 						results.getString("address"), 
 						results.getDouble("latitude"), 
 						results.getDouble("longitude"),
-						results.getString("place_id"));
+						results.getString("place_id"),
+						results.getString("timezone"));
 				theaterQuery.put(results.getString("address"), theater);
 			}
 			
@@ -204,14 +210,16 @@ public class TheaterQuery {
 				addStatement.append(COLLUMN_ADDRESS + ",");
 				addStatement.append(COLLUMN_LATITUDE + ",");
 				addStatement.append(COLLUMN_LONGITUDE + ",");
-				addStatement.append(COLLUMN_PLACE_ID + ") ");
+				addStatement.append(COLLUMN_PLACE_ID+ ",");
+				addStatement.append(COLLUMN_TIMEZONE + ") ");
 				addStatement.append("VALUES (");
 				addStatement.append(theater.getTheaterId() + ",");
 				addStatement.append("\"" + theater.getName() + "\"" + ",");
 				addStatement.append("'" + theater.getAddress() + "'" + ",");
 				addStatement.append(theater.getLatitude() + ",");
 				addStatement.append(theater.getLongitude() + ",");
-				addStatement.append("\"" + theater.getPlace_id()  + "\"" + ")");
+				addStatement.append("\"" + theater.getPlace_id()  + "\"" + ",");
+				addStatement.append("\"" + theater.getTimezone()  + "\"" + ")");
 				
 				statement.execute(addStatement.toString());
 				

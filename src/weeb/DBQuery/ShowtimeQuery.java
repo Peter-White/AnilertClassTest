@@ -16,7 +16,7 @@ import weeb.data.Theater;
 
 public class ShowtimeQuery {
 
-	private static final String DB_NAME = "Anilert.db";
+	private static final String DB_NAME = "WeebWatch.db";
 	private static final String CONNECTION_STRING = "jdbc:sqlite:/home/leafcoder/SQL/" + DB_NAME;
 	
 	// Because showtime acts as a many-to-many table for movies and 
