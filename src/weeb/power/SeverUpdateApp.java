@@ -5,8 +5,9 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
-
 import weeb.DBQuery.ShowtimeQuery;
+import weeb.JSONQuery.TheaterJSONQuery;
+import weeb.data.APIKeys;
 import weeb.data.Showtime;
 
 public class SeverUpdateApp {
@@ -27,11 +28,14 @@ public class SeverUpdateApp {
 //			
 //		}
 		
-		SimpleDateFormat timeToDie = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		TimeZone timeZone = TimeZone.getTimeZone("Europe/London");
-		timeToDie.setTimeZone(timeZone);
-		Date date = new Date();
-		System.out.println(timeToDie.format(date));
+//		SimpleDateFormat timeToDie = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+//		TimeZone timeZone = TimeZone.getTimeZone(new TheaterJSONQuery().getTimeZone(42.3912716, -71.1384544));
+//		timeToDie.setTimeZone(timeZone);
+//		Date date = new Date();
+//		System.out.println(timeToDie.format(date));
+		
+		Showtime showtime = ShowtimeQuery.queryShowtime(124);
+		ShowtimeQuery.deleteShowtime(showtime);
 	}
 
 }

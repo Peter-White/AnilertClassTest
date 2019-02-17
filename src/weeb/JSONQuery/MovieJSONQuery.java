@@ -16,7 +16,7 @@ import weeb.data.APIKeys;
 import weeb.data.Movie;
 import weeb.data.Theater;
 
-public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
+public class MovieJSONQuery {
 
 	private final String graceNoteURLStart = "http://data.tmsapi.com/v1.1/movies/showings?startDate=" + currentDate();
 	private final String movieDBStart = "https://api.themoviedb.org/3/search/multi?api_key=";
@@ -43,7 +43,7 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 			urlPath.append("&units=km");
 			urlPath.append("&api_key=");
 			urlPath.append(APIKeys.getGracenoteAPIKey());
-			movies = readJsonArrayFromUrl(urlPath.toString());
+			movies = new JSONArrayReader().readJsonArrayFromUrl(urlPath.toString());
 			
 			int count = 0;
 			
@@ -119,7 +119,7 @@ public class MovieJSONQuery extends weeb.JSONQuery.JSONReader {
 		  JSONArray results;
 		  
 		try {
-			results = readJsonObjectFromUrl(urlPath.toString()).getJSONArray("results");
+			results = new JSONObjectReader().readJsonObjectFromUrl(urlPath.toString()).getJSONArray("results");
 			
 			int length = 0;
 			

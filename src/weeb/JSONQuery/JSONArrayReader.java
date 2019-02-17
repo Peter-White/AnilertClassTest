@@ -1,4 +1,4 @@
-package weeb.power;
+package weeb.JSONQuery;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.nio.charset.Charset;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-public class JSONArrayReader implements JSONReader {
+public class JSONArrayReader implements IJSONReader {
 
 	public JSONArray readJsonArrayFromUrl(String urlPath) throws IOException, JSONException {
 		URL url = new URL(urlPath.toString());

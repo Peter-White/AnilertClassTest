@@ -14,14 +14,13 @@ import org.json.JSONObject;
 import weeb.data.APIKeys;
 import weeb.data.Movie;
 import weeb.data.Theater;
-import weeb.power.JSONObjectReader;
-import weeb.power.JSONReader;
 
 public class TheaterJSONQuery {
 
 	private StringBuilder urlPath;
 	private final String googlePlacesSearch = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=";
 	private final String googlePlaceID = "https://maps.googleapis.com/maps/api/place/details/json?placeid=";
+	private final String googleTimeZone = "https://maps.googleapis.com/maps/api/timezone/json?";
 
 	public JSONObject queryTheaterJSON(String name, Double lat, Double lng, double radius) {
 
@@ -115,5 +114,26 @@ public class TheaterJSONQuery {
 
 		return results;
 	}
-
+	
+	public String getTimeZone(double lat, double lng) {
+		
+		String timezone = null;
+		
+		urlPath = new StringBuilder(googleTimeZone);
+		urlPath.append("location=" + lat + "," + lng);
+		urlPath.append("&timestamp=0");
+		urlPath.append("&key=");
+		urlPath.append(APIKeys.getGooglePlacesAPIKey());
+		
+		try {
+			JSONObject timezoneObject = new JSONObjectReader().readJsonObjectFromUrl(urlPath.toString());
+			timezone = timezoneObject.getString("timeZoneId");
+		} catch (IOException | JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return timezone;
+		
+	}
 }

@@ -235,4 +235,25 @@ public class ShowtimeQuery {
 		
 		return movieShowtimes;
 	}
+	
+	public static void deleteShowtime(Showtime showtime) {
+		
+		try {
+			conn = DriverManager.getConnection(CONNECTION_STRING);
+			statement = conn.createStatement();
+			
+			StringBuilder deleteQuery = new StringBuilder("DELETE FROM " + TABLE_SHOWTIMES);
+			deleteQuery.append(" WHERE ");
+			deleteQuery.append(TABLE_SHOWTIMES + "." + COLLUMN_SHOWTIMEID + " = " + showtime.getShowtimeId());
+			
+			statement.execute(deleteQuery.toString());
+			
+			statement.close();
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 }

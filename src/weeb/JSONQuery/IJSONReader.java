@@ -1,8 +1,8 @@
-package weeb.power;
+package weeb.JSONQuery;
 
 import java.io.Reader;
 
-public interface JSONReader {
+public interface IJSONReader {
 
 	public String readJSONData(Reader rd);
 	
