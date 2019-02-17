@@ -88,7 +88,7 @@ public class UserSelectionApp {
 			} else if (choice == -1) {
 				return null;
 			} else {
-				System.out.println("Not an option. Please try again.");
+				System.out.println("\nNot an option. Please try again.");
 			}
 		}
 	}
@@ -96,7 +96,7 @@ public class UserSelectionApp {
 	// This is the menu that allows users to view and select the anime to be played at the selected theater
 	public static void theaterMenu(Theater theater) {
 		
-		System.out.println(theater.getName());
+		System.out.println("\n" + theater.getName());
 		System.out.println(theater.getAddress());
 		
 		Map<String, Set<Integer>> movieAndShowtimeIds = ShowtimeQuery.getMoviesAndShowtimesForTheater(theater);
@@ -116,29 +116,35 @@ public class UserSelectionApp {
 				System.out.println(key + ": " + value.getTitle());
 			});
 			
-			System.out.println("\nSelect the movie number you want to view");
+			System.out.println("\nSelect the movie number you want to view or -1 to go back to theater select");
 			int choice = scanner.nextInt();
 			scanner.nextLine();
 			
-			System.out.println("\n*" + animeSelection.get(choice).getTitle() + "*");
-			if(animeSelection.get(choice).getDescription() != null) {
-				System.out.println(animeSelection.get(choice).getDescription());
+			if(animeSelection.containsKey(choice)) {
+			
+				System.out.println("\n*" + animeSelection.get(choice).getTitle() + "*");
+				if(animeSelection.get(choice).getDescription() != null) {
+					System.out.println(animeSelection.get(choice).getDescription());
+				}
+				Movie anime = animeSelection.get(choice);
+				
+				System.out.println(anime.getRating());
+				System.out.println(MovieQuery.runtimeConvert(anime.getRuntime()));
+				System.out.println("\nShowtimes");
+				movieAndShowtimeIds.get(anime.getMovieId()).forEach((id) -> {
+					Showtime showtime = ShowtimeQuery.queryShowtime(id);
+					Date showDate = datetimeConvert(showtime.getDateTime());
+					String pattern = "h:mm a - EEEE, MMMMM, d, yyyy";
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+					System.out.println(simpleDateFormat.format(showDate));
+				});
+				
+			} else if(choice == -1) {
+				break;
+			} else {
+				System.out.println("\nNot a valid choice. Please try again.");
 			}
-			
-			Movie anime = animeSelection.get(choice);
-			
-			System.out.println(anime.getRating());
-			System.out.println(MovieQuery.runtimeConvert(anime.getRuntime()));
-			System.out.println("\nShowtimes");
-			movieAndShowtimeIds.get(anime.getMovieId()).forEach((id) -> {
-				Showtime showtime = ShowtimeQuery.queryShowtime(id);
-				Date showDate = datetimeConvert(showtime.getDateTime());
-				String pattern = "h:mm a - EEEE, MMMMM, d, yyyy";
-				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-				System.out.println(simpleDateFormat.format(showDate));
-			});
 		}
-		
 	}
 	
 	// User types in an address and sets the center for the movie search
