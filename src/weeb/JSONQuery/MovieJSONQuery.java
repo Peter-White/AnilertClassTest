@@ -43,6 +43,7 @@ public class MovieJSONQuery {
 			urlPath.append("&units=km");
 			urlPath.append("&api_key=");
 			urlPath.append(APIKeys.getGracenoteAPIKey());
+			
 			movies = new JSONArrayReader().readJsonArrayFromUrl(urlPath.toString());
 			
 			int count = 0;
@@ -51,11 +52,6 @@ public class MovieJSONQuery {
 				
 				JSONObject currentMovie = (JSONObject) movies.get(count);
 				movieJSONQuery.put(currentMovie.getString("title"), currentMovie);
-//				theaterJSONQuery.addTheatersJSON(currentMovie, lat, lng, radius);
-				
-//				if(isAnime(currentMovie) && !animeQuery.containsKey(currentMovie.getString("title"))) {
-//					animeQuery.put(currentMovie.getString("title"), JSONObjectToMovie(currentMovie));
-//				}
 				count++;
 			}
 			

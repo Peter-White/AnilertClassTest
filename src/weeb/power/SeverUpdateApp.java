@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.TimeZone;
 import weeb.DBQuery.ShowtimeQuery;
 import weeb.DBQuery.TheaterQuery;
+import weeb.JSONQuery.JSONToSQL;
 import weeb.JSONQuery.TheaterJSONQuery;
 import weeb.data.APIKeys;
 import weeb.data.Showtime;
@@ -27,6 +28,22 @@ public class SeverUpdateApp {
 					
 					for (Showtime showtime : showtimes) {
 						obsoleteShowtimeChecker(showtime);
+					}
+					
+				}
+				
+			}.start();
+			
+			new Thread() {
+
+				@Override
+				public void run() {
+					
+					Map<String, Theater> theaters = TheaterQuery.queryAllTheaters();
+					
+					for (Map.Entry<String, Theater> entry: theaters.entrySet()) {
+						JSONToSQL jsonToSQL = new JSONToSQL();
+						jsonToSQL.updateMovieTableBySingleTheater(entry.getValue());
 					}
 					
 				}

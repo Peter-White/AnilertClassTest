@@ -67,7 +67,7 @@ public class JSONToSQL {
 	// This function triggers the update of the movie, and showtime tables due to the design of the movie API
 	public void updateMovieTableBySingleTheater(Theater theater) {
 		queryedTheaters.put(theater.getTheaterId(), theater);
-		Coordinates coordinates = new Coordinates(theater.getLatitude(), theater.getLongitude(), 0.05);
+		Coordinates coordinates = new Coordinates(theater.getLatitude(), theater.getLongitude(), 5);
 		MovieJSONQuery moviesJSON = new MovieJSONQuery();
 		
 		Map<String, JSONObject> movies = moviesJSON.queryMovieJSONByInput(
@@ -81,7 +81,7 @@ public class JSONToSQL {
 				anime = MovieQuery.addAnimeToDb(anime);
 				queryedMovies.put(anime.getMovieId(), anime);
 				
-				updateShowtimeTable(value);
+				updateShowtimeTable(value, theater);
 			}
 		});
 
@@ -101,6 +101,32 @@ public class JSONToSQL {
 					Showtime showtime = JSONObjectToShowtime(movieJSON.getString("tmsId"), showtimeObject);
 					showtime = ShowtimeQuery.addShowtimeToDb(showtime);
 					queryShowtimes.add(showtime);
+				}
+			}
+		}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateShowtimeTable(JSONObject movieJSON, Theater theater) {
+		
+		JSONArray showtimesArray;
+		try {
+			showtimesArray = movieJSON.getJSONArray("showtimes");
+			if(showtimesArray.length() > 0) {
+			for (int i = 0; i < showtimesArray.length(); i++) {
+				JSONObject showtimeObject = showtimesArray.getJSONObject(i);
+				JSONObject theaterObject = showtimeObject.getJSONObject("theatre");
+				
+				if(theaterObject.getInt("id") == theater.getTheaterId()) {
+					if(ShowtimeQuery.queryShowtime(theaterObject.getInt("id"), 
+													movieJSON.getString("tmsId"), 
+													showtimeObject.getString("dateTime")) == null) {
+						Showtime showtime = JSONObjectToShowtime(movieJSON.getString("tmsId"), showtimeObject);
+						showtime = ShowtimeQuery.addShowtimeToDb(showtime);
+						queryShowtimes.add(showtime);
+					}
 				}
 			}
 		}
